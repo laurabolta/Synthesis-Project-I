@@ -149,3 +149,77 @@ with open('resultados_agrupados_completos.txt', 'w', encoding='utf-8') as out_fi
                 out_file.write(f"{valor}: {cantidad}\n")
 print("Resultados guardados en 'resultados_agrupados_completos.txt'")"
 """
+
+#Cleaning the data
+
+import pandas as pd
+
+df = pd.read_csv(csv_path, encoding='utf-8')
+print(df.head())
+print(df.info())
+df = pd.read_csv(csv_path, encoding='utf-8')
+
+# Limpiar y estandarizar nombres de columnas
+df.columns = (
+    df.columns.str.strip()                 # Quitar espacios
+             .str.lower()                 # Minúsculas
+             .str.replace('à', 'a')       # Normalizar acentos
+             .str.replace('è', 'e')
+             .str.replace('é', 'e')
+             .str.replace('í', 'i')
+             .str.replace('ó', 'o')
+             .str.replace('ú', 'u')
+             .str.replace('ç', 'c')
+             .str.replace(r"[^a-z0-9_]+", "_", regex=True)  # Reemplazar símbolos por guión bajo
+             .str.strip('_')                                
+)
+
+# Limpiar texto en columnas tipo string
+text_cols = df.select_dtypes(include='object').columns
+
+for col in text_cols:
+    df[col] = (
+        df[col].astype(str)
+               .str.strip()
+               .str.lower()
+               .str.title()
+    )
+
+# Convertir columnas numéricas
+# Nota d'accés
+if "nota_d_acces_preinscripcio" in df.columns:
+    df["nota_d_acces_preinscripcio"] = (
+        df["nota_d_acces_preinscripcio"]
+        .astype(str) #asegurem que es string
+        .str.replace(',', '.', regex=False)
+        .str.extract(r'([\d.]+)')[0]
+        .astype(float)
+    )
+
+# Taxa èxit
+if "taxa_exit" in df.columns:
+    df["taxa_exit"] = (
+        df["taxa_exit"]
+          .str.replace('%', '', regex=False)
+          .str.extract(r'([\d.]+)')[0]
+          .astype(float)
+    )
+
+#Handle missing data, 2 options:
+# Rellenar texto faltante con 'Desconegut'
+for col in text_cols:
+    df[col] = df[col].fillna("Desconegut")
+
+#podem eliminar les files que no ens interessen - opcional
+#df = df.dropna(subset=["estudi", "curs_academic", "sexe", "curs_academic_acces_estudi", "nota_d_acces_preinscripcio", "taxa_exit"])
+#df = df[~df["sexe"].isin(["Desconegut", "No especificat"])]
+
+# Eliminar filas duplicadas
+df = df.drop_duplicates()
+
+# Guardar DataFrame net
+df.to_csv("estudiants_net.csv", index=False, encoding='utf-8')
+
+print("\nDataFrame limpio:")
+print(df.head())
+print(df.info())
