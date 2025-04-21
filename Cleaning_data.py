@@ -2,7 +2,7 @@ import csv
 from collections import defaultdict
 
 # Ruta del archivo CSV
-csv_path = '/mnt/c/Users/sonia/OneDrive/Documents/UAB/Segon/2 semestre/Synthesis Project/Estudiants_èxit_accés_anònim.csv'
+csv_path = './Students/Estudiants_èxit_accés_anònim.csv'
 
 # Campos del CSV
 campos = [
