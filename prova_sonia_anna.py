@@ -8,11 +8,11 @@ import functions
 # Information about students access to the university:
 students_success_csv_path = './Students/Estudiants_èxit_accés_anònim.csv'
 # Information about moodle activities/deliveries of the students:
-moodle_activities_csv_path1 = './Students/ALUMNES_anònim_1.csv'
-moodle_activities_csv_path2 = './Students/ALUMNES_anònim_2.csv'
-moodle_activities_csv_path3 = './Students/ALUMNES_anònim_3.csv'
-moodle_activities_csv_path4 = './Students/ALUMNES_anònim_4.csv'
-moodle_activities_csv_path5 = './Students/ALUMNES_anònim_5.csv'
+moodle_activities_csv_path1 = './Students/ALUMNES_2019-20.csv'
+moodle_activities_csv_path2 = './Students/ALUMNES_2020-21.csv'
+moodle_activities_csv_path3 = './Students/ALUMNES_2021-22.csv'
+moodle_activities_csv_path4 = './Students/ALUMNES_2022-23.csv'
+moodle_activities_csv_path5 = '../Students/ALUMNES_2023-24.csv'
 # Information about the marks obtained by students on particular subjects:
 student_marks_csv_path = './Students/Estudiants_notes_assignatures_anònim.csv'
 
