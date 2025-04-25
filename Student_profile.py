@@ -102,3 +102,110 @@ if count_dict == count_file1 == count_file2 == count_file3:
 else:
     print("\nMismatch detected.")
 
+# ---------------------------------------------------
+#Students background clustering vs grades clustering
+# --------------------------------------------------
+# This code will cluster students based on their background data and grades, and then compare the clusters.
+# We will use KMeans clustering to group students based on their background and grades.
+# We will also visualize the clusters using PCA for dimensionality reduction.
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+
+# --------------------------
+# Load & Preprocess Background Data
+# --------------------------
+df_background = pd.read_csv(file1)
+
+# Select and preprocess relevant features
+df_background_filtered = df_background[[  
+    'Id Anonim',
+    'Sexe',
+    'Via Accés Estudi',
+    'Nota d\'accés (preinscripció)',
+    'Dedicació de l\'estudiant',
+    'Beca Concedida?',
+    'Estudis Mare',
+    'Estudis Pare'
+]].dropna(subset=['Nota d\'accés (preinscripció)'])  # Ensure valid grades
+
+# One-hot encode categorical variables
+df_background_encoded = pd.get_dummies(
+    df_background_filtered.drop(columns=['Id Anonim']),
+    drop_first=True
+)
+
+# Scale the background features
+scaler = StandardScaler()
+background_scaled = scaler.fit_transform(df_background_encoded)
+
+# Clustering background data
+k = 3
+kmeans_background = KMeans(n_clusters=k, random_state=42)
+clusters_background = kmeans_background.fit_predict(background_scaled)
+
+# Store background clusters
+df_background_filtered['Cluster_background'] = clusters_background
+
+# PCA for visualization (1D)
+pca_background = PCA(n_components=1)
+background_1d = pca_background.fit_transform(background_scaled)
+
+# --------------------------
+# GRADES-ONLY CLUSTERING
+# --------------------------
+# Normalize grade column
+grade_scaled = StandardScaler().fit_transform(
+    df_background_filtered[['Nota d\'accés (preinscripció)']]
+)
+
+# PCA (optional with 1 feature)
+pca_grade = PCA(n_components=1)
+grade_1d = pca_grade.fit_transform(grade_scaled)
+
+# Clustering based on grades only
+kmeans_grades = KMeans(n_clusters=3, random_state=42)
+clusters_grades = kmeans_grades.fit_predict(grade_1d)
+
+# Store grade clusters
+df_background_filtered['Cluster_admission'] = clusters_grades
+
+# --------------------------
+# PLOT: Side-by-side 1D Clustering Comparison
+# --------------------------
+fig, axs = plt.subplots(2, 1, figsize=(12, 4), sharex=True)
+
+# Access grade-only clustering
+axs[0].scatter(
+    grade_1d,
+    [0] * len(grade_1d),
+    c=clusters_grades,
+    cmap='viridis',
+    edgecolors='k',
+    s=60,
+    alpha=0.7
+)
+axs[0].set_title('Clustering basat en la Nota d\'accés (1D)')
+axs[0].set_yticks([])
+
+# Background PCA clustering
+axs[1].scatter(
+    background_1d,
+    [0] * len(background_1d),
+    c=clusters_background,
+    cmap='viridis',
+    edgecolors='k',
+    s=60,
+    alpha=0.7
+)
+axs[1].set_title('Clustering basat en Característiques de Fons (PCA 1D)')
+axs[1].set_yticks([])
+
+plt.xlabel('PCA Component 1 / Nota Normalitzada')
+plt.tight_layout()
+plt.grid(True)
+plt.show()
+
+
