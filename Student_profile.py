@@ -1,10 +1,11 @@
 import csv
 from collections import defaultdict
 import json
+import pandas as pd
 
-file1 = '.\Students\Estudiants_èxit_accés_anònim.csv'
-file2 = '.\Students\Estudiants_notes_assignatures_anònim.csv'
-file3 = '.\Students\Estudiants_abandonament_anònim.csv'
+file1 = './Students/Estudiants_èxit_accés_anònim.csv'
+file2 = './Students/Estudiants_notes_assignatures_anònim.csv'
+file3 = './Students/Estudiants_abandonament_anònim.csv'
 
 # Dictionary that will merge the info of every student matching the anonimus ID 
 students = defaultdict(lambda: {'background': None, 'grades': defaultdict(list), 'abandonment': None})
@@ -77,7 +78,7 @@ else:
     print(f"Student ID '{student_id}' not found.")
 
 
-# --------------------- To see that everything its okey-------------------------
+# --------------------- To see that everything is okey-------------------------
 # Count unique student IDs from each dataset
 def count_unique_ids(file_path, column_name):
     with open(file_path, encoding='utf-8') as f:
@@ -207,5 +208,50 @@ plt.xlabel('PCA Component 1 / Nota Normalitzada')
 plt.tight_layout()
 plt.grid(True)
 plt.show()
+# --------------------------
+# CONVERT DICTIONARY INTO A DATAFRAME
+# --------------------------
 
+# Create a list to store each student's data
+student_rows = []
+
+for student_id, data in students.items():
+    # Start with background and abandonment
+    student_row = {
+        'Id Anonim': student_id,
+    }
+    
+    # Add background info
+    if data['background']:
+        student_row.update(data['background'])
+    
+    # Add abandonment info
+    if data['abandonment']:
+        student_row.update(data['abandonment'])
+    
+    # Add some grades info (example: number of subjects and average grade)
+    grades = []
+    for year, year_grades in data['grades'].items():
+        for g in year_grades:
+            if g['Nota_assignatura']:
+                try:
+                    grades.append(float(g['Nota_assignatura']))
+                except ValueError:
+                    pass  # In case of non-numeric grades
+
+    if grades:
+        student_row['Average_Grade'] = sum(grades) / len(grades)
+        student_row['Number_of_Subjects'] = len(grades)
+    else:
+        student_row['Average_Grade'] = None
+        student_row['Number_of_Subjects'] = 0
+
+    student_rows.append(student_row)
+
+# Create the DataFrame
+df_students = pd.DataFrame(student_rows)
+
+# See the result
+print(df_students.head())
+print(df_students.columns)
 
