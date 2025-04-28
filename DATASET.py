@@ -1,6 +1,6 @@
 # Import necessary libraries
 import pandas as pd
-import functions
+from Preparing_Data import functions
 
 # PATHS TO THE CSV FILES -----------------------------------------------------------------
 
