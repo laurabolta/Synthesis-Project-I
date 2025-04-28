@@ -127,6 +127,8 @@ else:
 # ---------------------------------------------------
 #Students background clustering vs grades clustering
 # --------------------------------------------------
+
+#Students background clustering vs grades clustering
 # This code will cluster students based on their background data and grades, and then compare the clusters.
 # We will use KMeans clustering to group students based on their background and grades.
 # We will also visualize the clusters using PCA for dimensionality reduction.
@@ -135,6 +137,10 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
+from sklearn.cluster import DBSCAN
+import seaborn as sns
+
+
 
 # --------------------------
 # Load & Preprocess Background Data
@@ -149,86 +155,101 @@ df_background_filtered = df_background[[
     'Nota d\'accés (preinscripció)',
     'Dedicació de l\'estudiant',
     'Beca Concedida?',
-    'Estudis Mare',
-    'Estudis Pare'
 ]].dropna(subset=['Nota d\'accés (preinscripció)'])  # Ensure valid grades
 
 # One-hot encode categorical variables
-df_background_encoded = pd.get_dummies(
-    df_background_filtered.drop(columns=['Id Anonim']),
-    drop_first=True
-)
+# Primero cargamos de nuevo el dataframe procesado
+df = df_background_filtered.copy()
 
-# Scale the background features
-scaler = StandardScaler()
-background_scaled = scaler.fit_transform(df_background_encoded)
+# ---------------
+# Agrupamiento 1: Id Anonim vs Nota d'accés
+# ---------------
 
-# Clustering background data
-k = 3
-kmeans_background = KMeans(n_clusters=k, random_state=42)
-clusters_background = kmeans_background.fit_predict(background_scaled)
+# Usamos DBSCAN para agrupar notas iguales o muy cercanas
+scaler_notes = StandardScaler()
+notes_scaled = scaler_notes.fit_transform(df[['Nota d\'accés (preinscripció)']])
 
-# Store background clusters
-df_background_filtered['Cluster_background'] = clusters_background
+dbscan_notes = DBSCAN(eps=0.05, min_samples=1)  # eps pequeño para notas similares
+clusters_notes = dbscan_notes.fit_predict(notes_scaled)
 
-# PCA for visualization (1D)
-pca_background = PCA(n_components=1)
-background_1d = pca_background.fit_transform(background_scaled)
+# Guardamos el cluster de notas
+df['Cluster_same_grade'] = clusters_notes
+
+# ---------------
+# Agrupamiento 2: Id Anonim vs Características sociodemográficas
+# ---------------
+
+# Seleccionamos las características para agrupar
+features = [
+    'Beca Concedida?', 
+    'Via Accés Estudi', 
+    'Sexe',
+    'Dedicació de l\'estudiant'
+]
+
+# Codificamos las variables categóricas
+df_features_encoded = pd.get_dummies(df[features], drop_first=True)
+
+# Escalamos
+scaler_features = StandardScaler()
+features_scaled = scaler_features.fit_transform(df_features_encoded)
+
+# Clustering basado en similitudes sociodemográficas
+dbscan_features = DBSCAN(eps=0.5, min_samples=1)
+clusters_features = dbscan_features.fit_predict(features_scaled)
+
+# Guardamos el cluster socio-demográfico
+df['Cluster_profile'] = clusters_features
+
+# ---------------
+# Resultado
+# ---------------
+
+# Mostramos el dataframe final
+print(df[['Id Anonim', 'Nota d\'accés (preinscripció)', 'Cluster_same_grade', 'Cluster_profile']])
+
+df_unique = df.drop_duplicates(subset=['Id Anonim'])
+
+sns.set(style="whitegrid")
 
 # --------------------------
-# GRADES-ONLY CLUSTERING
+# Primer plot: Agrupación por Nota (sin duplicados)
 # --------------------------
-# Normalize grade column
-grade_scaled = StandardScaler().fit_transform(
-    df_background_filtered[['Nota d\'accés (preinscripció)']]
+plt.figure(figsize=(12, 6))
+sns.scatterplot(
+    x=range(len(df_unique)),  # índice limpio
+    y='Nota d\'accés (preinscripció)',
+    hue='Cluster_same_grade',
+    palette='tab10',
+    data=df_unique,
+    s=100
 )
-
-# PCA (optional with 1 feature)
-pca_grade = PCA(n_components=1)
-grade_1d = pca_grade.fit_transform(grade_scaled)
-
-# Clustering based on grades only
-kmeans_grades = KMeans(n_clusters=3, random_state=42)
-clusters_grades = kmeans_grades.fit_predict(grade_1d)
-
-# Store grade clusters
-df_background_filtered['Cluster_admission'] = clusters_grades
-
-# --------------------------
-# PLOT: Side-by-side 1D Clustering Comparison
-# --------------------------
-fig, axs = plt.subplots(2, 1, figsize=(12, 4), sharex=True)
-
-# Access grade-only clustering
-axs[0].scatter(
-    grade_1d,
-    [0] * len(grade_1d),
-    c=clusters_grades,
-    cmap='viridis',
-    edgecolors='k',
-    s=60,
-    alpha=0.7
-)
-axs[0].set_title('Clustering basat en la Nota d\'accés (1D)')
-axs[0].set_yticks([])
-
-# Background PCA clustering
-axs[1].scatter(
-    background_1d,
-    [0] * len(background_1d),
-    c=clusters_background,
-    cmap='viridis',
-    edgecolors='k',
-    s=60,
-    alpha=0.7
-)
-axs[1].set_title('Clustering basat en Característiques de Fons (PCA 1D)')
-axs[1].set_yticks([])
-
-plt.xlabel('PCA Component 1 / Nota Normalitzada')
+plt.title('Agrupación por Nota de Acceso (IDs únicos)', fontsize=16)
+plt.xlabel('Caso (Índice)')
+plt.ylabel('Nota de acceso')
+plt.legend(title='Cluster (Notas)')
 plt.tight_layout()
-plt.grid(True)
 plt.show()
+
+# --------------------------
+# Segundo plot: Perfil Sociodemográfico (sin duplicados)
+# --------------------------
+plt.figure(figsize=(12, 6))
+sns.scatterplot(
+    x=range(len(df_unique)),  # índice limpio
+    y='Cluster_profile',
+    hue='Cluster_profile',
+    palette='tab20',
+    data=df_unique,
+    s=100
+)
+plt.title('Agrupación por Perfil Sociodemográfico (IDs únicos)', fontsize=16)
+plt.xlabel('Caso (Índice)')
+plt.ylabel('Cluster de perfil')
+plt.legend(title='Cluster (Perfil)')
+plt.tight_layout()
+plt.show()
+
 # --------------------------
 # CONVERT DICTIONARY INTO A DATAFRAME
 # --------------------------
