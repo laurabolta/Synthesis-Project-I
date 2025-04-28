@@ -6,9 +6,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from DATASET import merged_df
 
-# PLOTS TO ANALYZE PATTERNS IN THE DATA -----------------------------------------------
+# HISTOGRAM OF ASSIGNMENT GRADES -----------------------------------------------
 
-# Histogram of assignment grades
 plt.figure(figsize=(8, 6))
 sns.histplot(merged_df['nota_assignatura'], kde=True, bins=20)
 plt.title('Distribution of Assignment Grades')
@@ -23,6 +22,8 @@ While the most common grades lie in the range between 4 and 10.
 We should inspect where all these zeros come from, if they are really student's marks
 or if they are related to other factors such as drop out.
 """
+
+# CLUSTERING -----------------------------------------------
 
 file1 = './Students/Estudiants_èxit_accés_anònim.csv'
 file2 = './Students/Estudiants_notes_assignatures_anònim.csv'
