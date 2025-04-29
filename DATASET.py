@@ -1,7 +1,6 @@
 # Import necessary libraries
 import pandas as pd
 from Preparing_Data import functions
-
 # PATHS TO THE CSV FILES -----------------------------------------------------------------
 
 student_success_csv_path = './Students/Estudiants_èxit_accés_anònim.csv'
@@ -70,20 +69,16 @@ print("--------------------------------------")
 print(merged_df.columns)
 print("--------------------------------------")
 # Visualize an example of an entry in our dataset
-print(merged_df.iloc[1])
+print(merged_df.iloc[10])
 print("--------------------------------------")
 
 # PREPROCESS AND CLEAN DATA -----------------------------------------------------------------
 
-# Standardize names of the columns
-functions.clean_df_columns(merged_df)
-
-# Clean text strings entries in the columns
-merged_df = functions.clean_text_strings(merged_df)
-
-# Visualize an example of an entry in our dataset
-print(merged_df.iloc[10])
-print("--------------------------------------")
-
 # Search for missing values
 print('Missing values per column:\n', merged_df.isnull().sum()) # there aren't any missing values 
+print("--------------------------------------")
+
+clean_df = functions.load_and_clean_data(merged_df)
+
+# Visualize an example of an entry in our dataset
+print(clean_df.iloc[10])
