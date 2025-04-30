@@ -75,13 +75,29 @@ print("--------------------------------------")
 # PREPROCESS AND CLEAN DATA -----------------------------------------------------------------
 
 # Search for missing values
-print('Missing values per column:\n', merged_df.isnull().sum()) # there aren't any missing values 
+print('Missing values per column:\n', merged_df.isnull().sum())  
+print("--------------------------------------")
+print(merged_df[merged_df.isnull().any(axis=1)]) # print rows where values are missing
 print("--------------------------------------")
 
+"""
+There are 56 missing values in total, all related to information about the parents' studies. 
+Upon inspecting the rows, we found that all missing values correspond to the same student (identified by the same anonymous ID). 
+Since this is a single, specific case, we can safely remove this student from the dataset without significantly impacting the model's training.
+"""
+
+merged_df.dropna(subset=['Estudis Mare', 'Estudis Pare'], inplace=True) # remove those entries
+
+# Now, check for missing values again and count the number of entries
+print('Missing values per column:\n', merged_df.isnull().sum())  
+print(f"Number of entries: {len(merged_df)}")
+print("--------------------------------------")
+
+# Clean the resulting dataframe
 clean_df = functions.load_and_clean_data(merged_df)
 clean_df = clean_df.drop_duplicates()
 
-# Guarda en CSV si lo necesitas
+# Save as a csv file if needed
 clean_df.to_csv("DATASET.csv", index=False)
 
 # Visualize an example of an entry in our dataset
