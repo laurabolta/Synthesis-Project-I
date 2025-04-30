@@ -79,6 +79,10 @@ print('Missing values per column:\n', merged_df.isnull().sum()) # there aren't a
 print("--------------------------------------")
 
 clean_df = functions.load_and_clean_data(merged_df)
+clean_df = clean_df.drop_duplicates()
+
+# Guarda en CSV si lo necesitas
+clean_df.to_csv("DATASET.csv", index=False)
 
 # Visualize an example of an entry in our dataset
 print(clean_df.iloc[10])
