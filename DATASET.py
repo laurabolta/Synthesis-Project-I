@@ -97,8 +97,11 @@ print("--------------------------------------")
 clean_df = functions.load_and_clean_data(merged_df)
 clean_df = clean_df.drop_duplicates()
 
+# Convert the dataframe to only numerical values
+numerical_df = functions.df_to_numerical(clean_df)
+
 # Save as a csv file if needed
-clean_df.to_csv("DATASET.csv", index=False)
+numerical_df.to_csv("DATASET.csv", index=False)
 
 # Visualize an example of an entry in our dataset
-print(clean_df.iloc[10])
+print(numerical_df.iloc[10])

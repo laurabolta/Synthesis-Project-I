@@ -69,3 +69,64 @@ def load_and_clean_data(merged_df):
     merged_df = convert_percentages_to_decimal(merged_df, 'taxa_exit')
     
     return merged_df
+
+# Convert the dataframe into numerical values
+def df_to_numerical(df):
+    df = df.copy()
+
+    # CONVERT 'estudi' TO NUMERICAL VALUES
+    df['estudi'] = df['estudi'].map({'Graduat en intel·ligència artificial / artificial intelligence': 0, 'Graduat en enginyeria informàtica': 1})
+
+    # CONVERT 'sexe' TO NUMERICAL VALUES
+    df['sexe'] = df['sexe'].map({'Home': 0, 'Dona': 1})
+
+    # CONVERT 'curs_academic' TO NUMERICAL VALUES
+    df['curs_academic'] = df['curs_academic'].map({'2020/21': 0, '2021/22': 1, '2022/23': 2, '2023/24': 3, '2024/25': 4})
+
+    # CONVERT 'via_acces_estudi' TO NUMERICAL VALUES
+    df['via_acces_estudi'] = df['via_acces_estudi'].map({'Batx. / cou amb pau': 0, 'Universitaris batx. / cou amb pau': 1, 'Fp2, cfgs': 2, 
+                                                        'Universitaris fp2 / cfgs': 3, 'Sense assignar': 4, 'Majors de 25 anys': 5, 
+                                                        'Diplomat, llicenciat': 6, 'Majors de 40 anys amb experiencia laboral': 7})
+                                                        
+
+    # CONVERT 'dedicacio_de_l_estudiant' TO NUMERICAL VALUES
+    df['dedicacio_de_l_estudiant'] = df['dedicacio_de_l_estudiant'].map({'Temps complet': 0, 'Temps variable': 1, 'Sense assignar': 2, 'Temps parcial': 3})
+
+    # CONVERT 'discapacitat' TO NUMERICAL VALUES
+    df['discapacitat'] = df['discapacitat'].map({'N': 0, '\'-2': 1, 'S': 2})
+
+    # CONVERT 'beca_concedida' TO NUMERICAL VALUES
+    df['beca_concedida'] = df['beca_concedida'].map({'Sí': 0, 'No': 1})
+
+    # CONVERT 'estudis_mare' and 'estudis_pare' TO NUMERICAL VALUES
+    education_order = {
+        'Sense estudis': 0,
+        'Estudis primaris': 1,
+        "Primera etapa d'educació secundària i similar (eso, egb)": 2,
+        'Egb o fp 1er grau': 3,
+        'Cicles formatius de grau mitjà i similars (formació professional de primer grau)': 4,
+        'Batxillerat': 5,
+        'Batxillerat o fp 2n grau': 6,
+        'Cicles formatius de grau superior i similars (formació professional de segon grau)': 7,
+        'Diplomat o enginyer tèc.': 8,
+        'Graus universitaris o diplomatures universitàries': 9,
+        'Màsters o antigues llicenciatures': 10,
+        'Doctorat universitari': 11,
+        'Altres / ns / nc': -1,
+        'Sense assignar': -2
+    }
+    df['estudis_mare'] = df['estudis_mare'].map(education_order)
+    df['estudis_pare'] = df['estudis_pare'].map(education_order)
+
+    missing_values = df.isnull().sum().sum()
+
+    if missing_values == 0:
+        print("Numerical DataFrame created with no missing values!\n")
+    else:
+        print(f"Warning: There are {missing_values} missing values in the DataFrame.")
+
+
+    # DROP NON-RELEVANT FEATURES
+    df = df.drop(columns=['assignatura', 'id_anonim'])
+
+    return df
