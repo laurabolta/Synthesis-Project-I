@@ -96,6 +96,7 @@ print("--------------------------------------")
 # Clean the resulting dataframe
 clean_df = functions.load_and_clean_data(merged_df)
 clean_df = clean_df.drop_duplicates()
+clean_df.to_csv("CLEANDATASET.csv", index=False)
 
 # Convert the dataframe to only numerical values
 numerical_df = functions.df_to_numerical(clean_df)
