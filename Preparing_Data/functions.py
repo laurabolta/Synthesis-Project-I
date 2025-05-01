@@ -2,6 +2,7 @@ import csv
 from collections import defaultdict
 import pandas as pd
 import re
+import numpy as np
 
 # FUCNTIONS TO PREPROCESS AND CLEAN DATA -----------------------------------------------------------------
 
@@ -84,11 +85,19 @@ def df_to_numerical(df):
     df['curs_academic'] = df['curs_academic'].map({'2020/21': 0, '2021/22': 1, '2022/23': 2, '2023/24': 3, '2024/25': 4})
 
     # CONVERT 'via_acces_estudi' TO NUMERICAL VALUES
-    df['via_acces_estudi'] = df['via_acces_estudi'].map({'Batx. / cou amb pau': 0, 'Universitaris batx. / cou amb pau': 1, 'Fp2, cfgs': 2, 
-                                                        'Universitaris fp2 / cfgs': 3, 'Sense assignar': 4, 'Majors de 25 anys': 5, 
-                                                        'Diplomat, llicenciat': 6, 'Majors de 40 anys amb experiencia laboral': 7})
-                                                        
+    df['via_acces_estudi'] = df['via_acces_estudi'].map({
+        'Batx. / cou amb pau': 0,                       # Traditional route via high school + PAU
+        'Universitaris batx. / cou amb pau': 1,          # University entrance via high school + PAU
+        'Fp2, cfgs': 2,                                 # Vocational training (FP2)
+        'Universitaris fp2 / cfgs': 3,                  # University entrance via vocational training (FP2)
+        'Majors de 25 anys': 4,                         # Age-based access (over 25)
+        'Diplomat, llicenciat': 5,                      # University degree holders
+        'Majors de 40 anys amb experiencia laboral': 6,  # Age-based access with work experience (over 40)
+        'Sense assignar': 7                             # Unassigned, missing data (could be treated as NaN or specific category)
+    })
 
+    df['via_acces_estudi'] = df['via_acces_estudi']
+                                           
     # CONVERT 'dedicacio_de_l_estudiant' TO NUMERICAL VALUES
     df['dedicacio_de_l_estudiant'] = df['dedicacio_de_l_estudiant'].map({'Temps complet': 0, 'Temps variable': 1, 'Sense assignar': 2, 'Temps parcial': 3})
 
@@ -126,7 +135,11 @@ def df_to_numerical(df):
         print(f"Warning: There are {missing_values} missing values in the DataFrame.")
 
 
+    # Replace each subject code with the average mark or grade of students in that subject
+    subject_means = df.groupby('codi_assignatura')['nota_assignatura'].mean().to_dict()
+    df['dificultat_assignatura'] = df['codi_assignatura'].map(subject_means)
+
     # DROP NON-RELEVANT FEATURES
-    df = df.drop(columns=['assignatura', 'id_anonim'])
+    df = df.drop(columns=['assignatura', 'id_anonim', 'codi_assignatura'])
 
     return df

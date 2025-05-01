@@ -104,4 +104,5 @@ numerical_df = functions.df_to_numerical(clean_df)
 numerical_df.to_csv("DATASET.csv", index=False)
 
 # Visualize an example of an entry in our dataset
+print('Example of an entry of the cleaned DataFrame:\n')
 print(numerical_df.iloc[10])
