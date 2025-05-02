@@ -1,32 +1,34 @@
 import pandas as pd
 
-# Load the first dataset (Course Details)
-data1 = pd.read_csv('Attendance/ocupacio_aules_EE_24_25_v06.csv', sep=',')
-print("Columns in first dataset:", data1.columns)
+# Dataset d’ocupació
+ocupacio_df = pd.read_csv('Attendance/ocupacio_aules_EE_24_25_v06.csv', sep=',')
+ocupacio_df['Codi_Ass'] = ocupacio_df['Codi_Ass + Assignatura'].str.extract(r'(\d+)')
+ocupacio_df['Codi_Ass'] = ocupacio_df['Codi_Ass'].astype(str).str.strip()
 
-# Extract and clean 'Codi_Ass' from 'Codi_Ass + Assignatura'
-data1['Codi_Ass'] = data1['Codi_Ass + Assignatura'].str.extract(r'(\d+)')  # Extract only the numeric part
-data1['Codi_Ass'] = data1['Codi_Ass'].astype(str).str.strip()
+# Professors GEI
+professors_df_EE = pd.read_csv('Profesors/GEI_anònim_2.csv', sep=',', on_bad_lines='skip')
+professors_df_EE.columns = professors_df_EE.columns.str.strip()
+professors_df_EE = professors_df_EE[professors_df_EE['Codi_Ass'].notnull()]
+professors_df_EE['Codi_Ass'] = professors_df_EE['Codi_Ass'].astype('Int64').astype(str)
 
-# Select needed columns
-data1_clean = data1[['start date', 'start time', 'end date', 'end time', 'class Id', 'Estudi', 'Codi_Ass']]
+# Professors IA
+professors_df_IA = pd.read_csv('Profesors/IA_anònim_1.csv', sep=';', skiprows=4, on_bad_lines='skip')
+professors_df_IA.columns = professors_df_IA.columns.str.strip()
+professors_df_IA = professors_df_IA[professors_df_IA['Codi_Ass'].notnull()]
+professors_df_IA['Codi_Ass'] = professors_df_IA['Codi_Ass'].astype('Int64').astype(str)
 
-# Load second dataset (Professor Details), skip metadata rows
-data2 = pd.read_csv('Profesors/IA_anònim_1.csv', sep=';', skiprows=4)
-print("Columns in second dataset:", data2.columns)
+# Combinar professors GEI + IA
+professors_total = pd.concat([
+    professors_df_EE[['Codi_Ass', 'Id Anònim PD']],
+    professors_df_IA[['Codi_Ass', 'Id Anònim PD']]
+], ignore_index=True).drop_duplicates(subset='Codi_Ass')
 
-# Clean up column names and Codi_Ass
-data2.columns = data2.columns.str.strip()
-data2['Codi_Ass'] = data2['Codi_Ass'].astype(str).str.strip()
+# Merge final
+merged_df = pd.merge(ocupacio_df, professors_total, on='Codi_Ass', how='left')
 
-# Select needed columns
-data2_clean = data2[['Codi_Ass', 'Id Anònim PD']]
+# Select only the desired columns
+final_data = merged_df[['start date', 'start time', 'end date', 'end time', 'class Id', 'Codi_Ass', 'Id Anònim PD']]
 
-# Perform merge
-merged_data = pd.merge(data1_clean, data2_clean, on='Codi_Ass', how='left')
-
-# Inspect result
-print(merged_data.head())
-
-# Save merged output
-merged_data.to_csv('CLASS_PROFESSOR_data.csv', index=False)
+# Exportar i mostrar
+final_data.to_csv('merged_occupacio_professors.csv', index=False)
+print(final_data[['Codi_Ass', 'Id Anònim PD']].drop_duplicates().head(10))
