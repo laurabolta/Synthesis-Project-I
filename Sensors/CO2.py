@@ -1,14 +1,45 @@
 
 import paho.mqtt.client as mqtt
 import json
+from datetime import datetime
+import pandas as pd
 
-def send_alert(classroom, co2_value):
-    print(f"ALERT: CO₂ in {classroom} is {co2_value} ppm — open windows or improve ventilation.")
+# Load and preprocess final_data from CSV
+final_data = pd.read_csv('Sensors/merged_occupacio_professors.csv')
+final_data['start date'] = final_data['start date'].astype(str).str.strip()
+final_data['start time'] = final_data['start time'].astype(str).str.strip()
+final_data['end time'] = final_data['end time'].astype(str).str.strip()
+final_data['class Id'] = final_data['class Id'].astype(str).str.strip()
+
+def send_alert(classroom, final_data, time_str, date_str, co2_level):
+    current_time = datetime.strptime(time_str, "%H:%M")
+    current_date = datetime.strptime(date_str, "%d/%m/%Y").date()
+    
+    # Filter rows for matching date and class ID
+    candidates = final_data[final_data['class Id'].str.upper() == classroom.upper()]
+    candidates = candidates[candidates['start date'] == date_str]
+
+    # Check if time falls in the scheduled class time
+    def is_within(row):
+        start = datetime.strptime(row['start time'], "%H:%M")
+        end = datetime.strptime(row['end time'], "%H:%M")
+        return start <= current_time <= end
+
+    # Apply time filter
+    active_classes = candidates[candidates.apply(is_within, axis=1)]
+
+    if not active_classes.empty:
+        for _, row in active_classes.iterrows():
+            print(f"ALERT: CO₂ level is {co2_level} ppm in {classroom} during '{row['Assignatura']}'")
+            print(f"Notifying professor(s): {row['Id Anònim PD']}")
+    else:
+        print(f"No active class found in {classroom} at {time_str} on {date_str}.")
+
 
 WATCHED_DEVICES = {
-    "q4-1003-7456": "Q4-1003",
-    "eui-24e124128c147446": "Q2-1011",
-    "eui-24e124128c147470": "Q1-1013"
+    "q4-1003-7456": "Q4/1003",
+    "eui-24e124128c147446": "Q2/1011",
+    "eui-24e124128c147470": "Q1/1013"
 }
 
 CO2_THRESHOLD = 1000
@@ -34,7 +65,13 @@ def on_message(client, userdata, msg):
             room = WATCHED_DEVICES[sensor]
             print(f"[{room}] CO₂ level: {co2} ppm")
             if co2 >= CO2_THRESHOLD:
-                send_alert(room, co2)
+                print(f"ALERT: CO₂ in {room} is {co2} ppm — open windows or improve ventilation.")
+                now = datetime.now()
+                date_str = now.strftime("%d/%m/%Y")
+                time_str = now.strftime("%H:%M")
+                
+                send_alert(room, final_data, time_str, date_str, co2)
+                
     except Exception as e:
         print(f"Error processing message: {e}")
     
