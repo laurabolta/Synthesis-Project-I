@@ -15,24 +15,10 @@ abandonment_df = pd.read_csv(student_abandonment_csv_path)
 
 # Preprocess Background Data -----------------------------------------------------------------
 
-# Choose relevant background features
-background_features = [
-    'Id Anonim',
-    'Via Accés Estudi',
-    'Nota d\'accés (preinscripció)',
-    'Dedicació de l\'estudiant',
-    'S/N Discapacitat',
-    'Beca Concedida?',
-    'Estudis Mare',
-    'Estudis Pare',
-    'Taxa èxit',   
-]
-
-background_df = background_df[background_features]
-
 # Rename for simplicity
 background_df.rename(columns={'Nota d\'accés (preinscripció)': 'Nota d\'accés'}, inplace=True)
 background_df.rename(columns={'S/N Discapacitat': 'Discapacitat'}, inplace=True)
+
 # Preprocess Grades Data -----------------------------------------------------------------
 
 # Rename columns with students ids for the name to match
@@ -56,7 +42,19 @@ abandonment_df.rename(columns={'Nombre Abandonaments Universitat Reals': 'Abando
 # MERGE THE DATA -----------------------------------------------------------------
 
 # First, merge background info with grades
-merged_df = grades_df.merge(background_df, on='Id Anonim', how='left')
+merged_df = pd.merge(
+    grades_df,
+    background_df.drop(columns=['Taxa èxit']),  # drop 'Taxa èxit' from the students side
+    on=['Id Anonim', 'Estudi', 'Curs acadèmic', 'Sexe'],
+    how='left'
+)
+
+# Add 'Taxa èxit' as a separate field 
+taxa_exit_map = background_df.set_index('Id Anonim')['Taxa èxit'].to_dict()
+merged_df['Taxa èxit'] = merged_df['Id Anonim'].map(taxa_exit_map)
+
+# Ensure only one row per student in abandonment_df
+abandonment_df = abandonment_df.drop_duplicates(subset='Id Anonim')
 
 # Then, merge abandonment info
 merged_df = merged_df.merge(abandonment_df, on='Id Anonim', how='left')
