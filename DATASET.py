@@ -94,13 +94,14 @@ print("--------------------------------------")
 # Clean the resulting dataframe
 clean_df = functions.load_and_clean_data(merged_df)
 clean_df = clean_df.drop_duplicates()
+clean_df = clean_df.drop(columns='curs_academic_acces_estudi') # remove not necessary features
 clean_df.to_csv("CLEANDATASET.csv", index=False)
 
 # Convert the dataframe to only numerical values
 numerical_df = functions.df_to_numerical(clean_df)
 
 # Save as a csv file if needed
-numerical_df.to_csv("DATASET.csv", index=False)
+numerical_df.to_csv("NUMDATASET.csv", index=False)
 
 # Visualize an example of an entry in our dataset
 print('Example of an entry of the cleaned DataFrame:\n')
