@@ -16,6 +16,7 @@ df_alumno = df[df['id_anonim'] == selected_id]
 st.subheader(f"Asignaturas con alerta para el estudiante {selected_id}")
 st.dataframe(df_alumno[['assignatura', 'predicted_nota_assignatura', 'nota_assignatura']])
 
+
 # ---------------------------
 # Conectar a la base de datos
 # --------------------------
@@ -48,3 +49,6 @@ def local_css(file_name):
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 local_css("style.css")
+
+
+
