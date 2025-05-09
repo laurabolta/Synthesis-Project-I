@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-print ("hola")
+
 # Cargar las alertas
 df = pd.read_csv('alertas_academicas.csv')
 
