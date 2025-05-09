@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "app-alertas-459312",
+  "private_key_id": "2d6799dd14cbf64fd9b6884b1a34bc6fdb9db774",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDPc1sttJnyUzOO\nNpxzpgUjEpd/hpf0sKlnTTNtmGcQE9N6tSw7dOItMvC2MNF767rbqYcJDrlzCC0a\nS/7qtlNoBbSXpgtnFnKCK04tpfAN3c857GjfCy0aZ3L+tmTUTc4lnDscCqBf8/WJ\nLbVQ0ViNxoDqBYe3oLaZSQVAakxRoM1yOwqqwWbeHcdHeZ3Ah1LlSKAs+fAHKFag\nvg1fksivM+sb1pwHm+2XRChfA6Ee0dv7jwEg6jgjbfSpWQsdqaxXI50DMVfhIyHx\nx04gE8hFvJkjJlgAtJIbmJ1NJCg4NwODYwRqpcfF1JRzjwBJqN9dg3w+SWTAOk25\n7ZDWkt8NAgMBAAECggEAFeEUvL1Pfz9HMLiRx6C66fgMAmcvn58CPuLliamJNSji\nJQ72m064jAvTV2POtEMocgJvO4VSCc/S8fMR769LHK19XoEksrqrWQ84L5hQuSWr\ntXA5n0yOdTpz5mlWOQ37r/vKQCrevz/7pXwso1lw/YLyFbx/k95fY8tPwntzkSgz\nxAkuxvNmZ5e2UF7qIR8ePHmvf7pSanwjG4jMGqkDYYIx1snqISgACEvi1uIxoNFm\npyjOfqUirqKpvgWtnzztvhGFuHTDUS258BlA/wUBGVfS1TTPz8eo0DA5dvsNw6Qa\nQLXdQi0GoWg/al7AwYJNGOavJQcjvFaUMjq5G+yAAQKBgQD4QkO56y3obSRyyH9X\nnzJNiFOQpJSt9qMdmaI/sxMzkktga9HJE8lj8LEYn3iCJBlY7zu/+Pgvnr9Y8kX4\nMh6GUtZzbH8P2xtdYY1GKS1rnQ4qq4HI3Gfy28sr0+lKJtuEaTiWVlDv3GG6oZfL\n+zS12E9w8iJWOz4NEMwFrLMiLQKBgQDV61aeX37Z4tJL5nzZF4IU7wjD7MXFcSql\nMCYv6ofzib0ok7tO/KHmrT6APPyVYuekgkVqXI0+Tfcv1oDdZ5jj1OvWQZFAsUA+\nt8/qnvlSDa8qbeDRV5QB6+mHuae6j4KvhDxIcsPste9DzBuIceVmJHh8pDdTIaPv\nvelrgo4cYQKBgHqEgVYEmYBmNKGtDyNX/oRC7jKo9nMwD+nwwyC6qJQ/85EfRMX+\nTNpUk6G6OcfINvYsAonIPfuKVZZ44k0NtwDFau5FsiNKF6QrG4Rvl+nO9YnbYE6X\nb3lsPUVg7HXa3WToZLPU31awpU5spzRUwfuoR/ROmuGBlSrvijCWvUT1AoGBAKX1\nunGL7MHlcvlni5xw3H6ZI9e8rYKMVWVqgXXTIj4Ssin00vBolsJ7zW134w2Sedvr\nJSdrPjkEC62VYMxkPv0ihwTmQWZLHWiK+kcvpoW+EBN+w1gl9bG38KlXo4TdKao5\nkPsz7kSKsWGLzCCDHFGuIbuxOyrHgoPQdnLuCoqBAoGBANRRuIbnAH7cNQ6/VbJm\nk2KGIM0f64C+EDe9ofaP1G/ahLNQ6jGUuCjDXVTBfImylEC67K6+1cjZnHoiuLHx\n2AgN8zDlBnI23DyP4yBwH7g3qKEbRSUF6wbbFUmmSpdF54R3E5iXdCKmO4x4n9dW\n858ca6GaOHUVV/dDd9JlNyx2\n-----END PRIVATE KEY-----\n",
+  "client_email": "streamlit-profesores@app-alertas-459312.iam.gserviceaccount.com",
+  "client_id": "109913859106335942751",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/streamlit-profesores%40app-alertas-459312.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
