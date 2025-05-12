@@ -1,8 +1,4 @@
-﻿PDI docència detall;;;;;
-;;;;;
-Data de les dades: 02/03/2025;;;;;
-;;;;;
-Curs acadèmic;Estudi;Id Anònim PD;Codi_Ass;Assignatura;Hores professor Totals
+﻿Curs acadèmic;Estudi;Id Anònim PD;Codi_Ass;Assignatura;Hores professor Totals
 2024/25;Graduat en Intel·ligència Artificial / Artificial Intelligence;35A50006446C3C27784030A33B78E499;106590;Navegació Autònoma;25,30 
 2024/25;Graduat en Intel·ligència Artificial / Artificial Intelligence;F13EBA1CB1984F793950A9F33F51871C;106551;Fonaments Matemàtics II;111,00 
 2024/25;Graduat en Intel·ligència Artificial / Artificial Intelligence;F9EBA0BE6E36513431CA90B76C8BC1B9;106570;Resolució de Problemes;45,76 
@@ -80,5 +76,4 @@ Curs acadèmic;Estudi;Id Anònim PD;Codi_Ass;Assignatura;Hores professor Totals
 2024/25;Graduat en Intel·ligència Artificial / Artificial Intelligence;16266C6156A9FDA5BBD9EA9A566042BD;106598;Innovació Social;38,12 
 2024/25;Graduat en Intel·ligència Artificial / Artificial Intelligence;16266C6156A9FDA5BBD9EA9A566042BD;106589;Robots Intel·ligents;62,50 
 2024/25;Graduat en Intel·ligència Artificial / Artificial Intelligence;7147CD677445A7111F50C3850F74413C;106590;Navegació Autònoma;45,54 
-;;;;;
-OGD , Oficina de Govern de les Dades;;;;;
+
