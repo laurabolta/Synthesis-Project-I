@@ -13,6 +13,8 @@ carpeta_profesores = "Profesors"
 base_csv = "base_inicial.csv"
 credenciales = "credenciales_google.json"
 
+
+
 # Función para detectar el delimitador (coma o punto y coma)
 def detectar_delimitador(ruta_csv):
     with open(ruta_csv, 'r', encoding='utf-8') as archivo:
@@ -51,6 +53,8 @@ for archivo in os.listdir(carpeta_profesores):
 base_inicial = pd.read_csv(base_csv, sep=";")  # Asegúrate de usar el delimitador correcto
 valores = [base_inicial.columns.tolist()] + base_inicial.values.tolist()
 
+
+
 # Crear o acceder a los libros de Google Sheets para cada profesor
 for id_profesor in ids_unicos:
     try:
@@ -60,14 +64,14 @@ for id_profesor in ids_unicos:
         try:
             client.open(nombre_libro)
         except:
-            # Si no existe, crea uno nuevo
+            # Si no existe, crea uno nuevo y lo rellena con base_inicial
             nuevo_libro = client.create(nombre_libro)
             hoja = nuevo_libro.sheet1
-            hoja.update(valores)  # Actualizar la hoja con los valores iniciales
+            hoja.update(valores)  # Aquí se usa el contenido de base_inicial.csv
             st.success(f"✅ Hoja creada para el profesor {id_profesor}")
     except Exception as e:
         st.warning(f"No se pudo crear o acceder a la hoja para {id_profesor}: {e}")
-
+        
 # ---------------------- Interfaz para el profesor ----------------------
 user_id = st.text_input("Introduce tu ID de Profesor")
 
@@ -91,6 +95,7 @@ if user_id in ids_unicos:
     if df is not None:
         st.subheader("Editar notas de tus alumnos:")
         # Mostrar la tabla para que el profesor edite las notas
+        st.write(base_inicial)
         edit_df = st.data_editor(df, use_container_width=True, num_rows="dynamic")
 
         if st.button("Guardar cambios"):
