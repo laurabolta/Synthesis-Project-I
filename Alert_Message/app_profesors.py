@@ -91,11 +91,11 @@ if user_id in ids_unicos:
 
     sheet_name = f"Notas_{user_id}"
     df, sheet = load_profesor_data(sheet_name)
-
+    # CHANGE THIS IN ORDER TO BE ABLE TO EDIT
     if df is not None:
         st.subheader("Editar notas de tus alumnos:")
         # Mostrar la tabla para que el profesor edite las notas
-        st.write(base_inicial)
+        st.write(base_inicial) # ID ALUMNE, AASISGNATURA.. Edit hauria d'estar dins de s write
         edit_df = st.data_editor(df, use_container_width=True, num_rows="dynamic")
 
         if st.button("Guardar cambios"):
@@ -108,3 +108,7 @@ if user_id in ids_unicos:
 else:
     if user_id:
         st.warning("ID no reconocido o no asignado a ninguna hoja.")
+
+
+
+# DSP DE AFEGIR COSES HAURIA DE SORTIR ESTADISTIQUES DE COM HO ESTA FENT LA CLASSE I TOT 
