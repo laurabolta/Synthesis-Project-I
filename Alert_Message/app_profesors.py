@@ -45,7 +45,7 @@ def cargar_credenciales():
 
 client = cargar_credenciales()
 
-# ---------------------- UI ----------------------
+# ---------------------- Processing ----------------------
 st.markdown('<div class="titulo-uab"><h1>Campus Virtual - Teacher Panel</h1></div>', unsafe_allow_html=True)
 st.markdown('<div class="uab-subtitle">Welcome to Subject X</div>', unsafe_allow_html=True)
 
