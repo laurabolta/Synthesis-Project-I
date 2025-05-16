@@ -5,3 +5,10 @@ This project aims to identify students at academic risk using historical academi
 - Predict students who are at risk of academic failure.
 - Send automated alerts to students and staff.
 - Web integration.
+
+
+Environment name: synthesis
+run this on the terminal for import all the requirements:
+pip install -r requirements.txt
+
+
