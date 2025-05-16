@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import matplotlib.pyplot as plt
 
 # ---------------------- Page config ----------------------
 st.set_page_config(page_title="Campus Virtual - Teacher Panel", layout="wide")
@@ -81,8 +82,23 @@ if user_id:
             try:
                 sheet.update([edit_df.columns.values.tolist()] + edit_df.values.tolist())
                 st.success("Changes successfully saved to Google Sheet")
+                #ruta_central = "estudiants_net.csv"
+                #df_central = pd.read_csv(ruta_central)
+                #if "nota_parcial" not in df_central.columns:
+                 #   df_central["nota_parcial"] = None
+
+                #if "id_anonim" in edit_df.columns and "nota_parcial" in edit_df.columns:
+                 #   df_central["id_anonim"] = df_central["id_anonim"].astype(str)
+                  #  edit_df["id_anonim"] = edit_df["id_anonim"].astype(str)
+
+                    #df_actualizado = df_central.merge(edit_df[["id_anonim", "nota_parcial"]], on="id_anonim", how="left")
+
+                    #df_actualizado.to_csv(ruta_central, index=False)
+                    #st.success("Archivo central 'estudiants_net.csv' actualizado con nuevas notas.")
+                #else:
+                 #   st.warning("No se encontró la columna 'nota' o 'id_anonim' para actualizar el CSV central.")
             except Exception as e:
-                st.error(f"Failed to save changes: {e}")
+                st.error(f"No se pudieron guardar los cambios: {e}")
 
         # Convert marks columns to numeric safely (handling commas and points)
         try:
@@ -124,7 +140,6 @@ if user_id:
 else:
     st.info("Please enter your anonymous Teacher ID to begin.")
 # ---------------------- Grade Distribution Histograms ----------------------
-import matplotlib.pyplot as plt
 
 st.subheader("Grades Distribution:")
 
