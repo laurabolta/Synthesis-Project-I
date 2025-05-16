@@ -36,8 +36,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------- Config & Google Sheets ----------------------
-base_csv = "base_inicial.csv"
 credenciales = "credenciales_google.json"
+base_csv = "base_inicial.csv"
+curso_actual = "2024/2025"
+csv_central = "estudiants_net.csv"
 
 def cargar_credenciales():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -54,7 +56,6 @@ user_id = st.text_input("Enter your teacher ID")
 
 if user_id:
     st.markdown(f'<div class="uab-box">Welcome Teacher: <b>{user_id}</b></div>', unsafe_allow_html=True)
-
     sheet_name = f"Notas_{user_id}"
 
     try:
@@ -82,21 +83,21 @@ if user_id:
             try:
                 sheet.update([edit_df.columns.values.tolist()] + edit_df.values.tolist())
                 st.success("Changes successfully saved to Google Sheet")
-                #ruta_central = "estudiants_net.csv"
-                #df_central = pd.read_csv(ruta_central)
-                #if "nota_parcial" not in df_central.columns:
-                 #   df_central["nota_parcial"] = None
+                ruta_central = "estudiants_net.csv"
+                df_central = pd.read_csv(ruta_central)
+                if "nota_parcial" not in df_central.columns:
+                    df_central["nota_parcial"] = None
 
-                #if "id_anonim" in edit_df.columns and "nota_parcial" in edit_df.columns:
-                 #   df_central["id_anonim"] = df_central["id_anonim"].astype(str)
-                  #  edit_df["id_anonim"] = edit_df["id_anonim"].astype(str)
+                if "id_anonim" in edit_df.columns and "nota_parcial" in edit_df.columns:
+                    df_central["id_anonim"] = df_central["id_anonim"].astype(str)
+                    edit_df["id_anonim"] = edit_df["id_anonim"].astype(str)
 
-                    #df_actualizado = df_central.merge(edit_df[["id_anonim", "nota_parcial"]], on="id_anonim", how="left")
+                    df_actualizado = df_central.merge(edit_df[["id_anonim", "nota_parcial"]], on="id_anonim", how="left")
 
-                    #df_actualizado.to_csv(ruta_central, index=False)
-                    #st.success("Archivo central 'estudiants_net.csv' actualizado con nuevas notas.")
-                #else:
-                 #   st.warning("No se encontró la columna 'nota' o 'id_anonim' para actualizar el CSV central.")
+                    df_actualizado.to_csv(ruta_central, index=False)
+                    st.success("Archivo central 'estudiants_net.csv' actualizado con nuevas notas.")
+                else:
+                    st.warning("No se encontró la columna 'nota_parcial' o 'id_anonim' para actualizar el CSV central.")
             except Exception as e:
                 st.error(f"No se pudieron guardar los cambios: {e}")
 
@@ -136,56 +137,55 @@ if user_id:
 
     except Exception as e:
         st.error(f"Error loading or creating the sheet: {e}")
+    st.subheader("Grades Distribution:")
 
+    # This is just if we want to print one plot. They appeared TOO BIG and I 
+    # thought that maybe just putting both side by side would be useful but 
+    # this could not be done if we dont have both grades (parcial and final)...
+
+    # I write everything as # as if not, it will appear in the website (even if i used "")
+
+    #try:
+        #if 'nota_parcial' in edit_df.columns and not edit_df['nota_parcial'].dropna().empty:
+            #fig_parcial, ax = plt.subplots(figsize=(4, 2))  # smaller figure
+            #ax.hist(edit_df['nota_parcial'].dropna(), bins=10, edgecolor='black', color='#1f77b4')  # blue
+            #ax.set_title("Partial Marks Distribution")
+            #ax.set_xlabel("Mark")
+            #ax.set_ylabel("Number of Students")
+            #st.pyplot(fig_parcial)
+
+        #if 'nota_final' in edit_df.columns and not edit_df['nota_final'].dropna().empty:
+            #fig_final, ax = plt.subplots(figsize=(4, 2))  # smaller figure
+            #ax.hist(edit_df['nota_final'].dropna(), bins=10, edgecolor='black', color='#ff7f0e')  # orange
+            #ax.set_title("Final Marks Distribution")
+            #ax.set_xlabel("Mark")
+            #ax.set_ylabel("Number of Students")
+            #st.pyplot(fig_final)
+
+    try:
+        # Create a figure with 1 row and 2 columns
+        fig, axes = plt.subplots(1, 2, figsize=(8, 3))  # Small, side-by-side
+
+        # Plot Partial Marks if available
+        if 'nota_parcial' in edit_df.columns and not edit_df['nota_parcial'].dropna().empty:
+            axes[0].hist(edit_df['nota_parcial'].dropna(), bins=10, edgecolor='black', color="#197100")
+            axes[0].set_title("Partial Marks")
+            axes[0].set_xlabel("Mark")
+            axes[0].set_ylabel("Students")
+
+        # Plot Final Marks if available
+        if 'nota_final' in edit_df.columns and not edit_df['nota_final'].dropna().empty:
+            axes[1].hist(edit_df['nota_final'].dropna(), bins=10, edgecolor='black', color="#197100")
+            axes[1].set_title("Final Marks")
+            axes[1].set_xlabel("Mark")
+            axes[1].set_ylabel("Students")
+
+        plt.tight_layout()
+        st.pyplot(fig)
+
+    except Exception as e:
+        st.error(f"Error generating distribution charts: {e}")
 else:
     st.info("Please enter your anonymous Teacher ID to begin.")
 # ---------------------- Grade Distribution Histograms ----------------------
 
-st.subheader("Grades Distribution:")
-
-# This is just if we want to print one plot. They appeared TOO BIG and I 
-# thought that maybe just putting both side by side would be useful but 
-# this could not be done if we dont have both grades (parcial and final)...
-
-# I write everything as # as if not, it will appear in the website (even if i used "")
-
-#try:
-    #if 'nota_parcial' in edit_df.columns and not edit_df['nota_parcial'].dropna().empty:
-        #fig_parcial, ax = plt.subplots(figsize=(4, 2))  # smaller figure
-        #ax.hist(edit_df['nota_parcial'].dropna(), bins=10, edgecolor='black', color='#1f77b4')  # blue
-        #ax.set_title("Partial Marks Distribution")
-        #ax.set_xlabel("Mark")
-        #ax.set_ylabel("Number of Students")
-        #st.pyplot(fig_parcial)
-
-    #if 'nota_final' in edit_df.columns and not edit_df['nota_final'].dropna().empty:
-        #fig_final, ax = plt.subplots(figsize=(4, 2))  # smaller figure
-        #ax.hist(edit_df['nota_final'].dropna(), bins=10, edgecolor='black', color='#ff7f0e')  # orange
-        #ax.set_title("Final Marks Distribution")
-        #ax.set_xlabel("Mark")
-        #ax.set_ylabel("Number of Students")
-        #st.pyplot(fig_final)
-
-try:
-    # Create a figure with 1 row and 2 columns
-    fig, axes = plt.subplots(1, 2, figsize=(8, 3))  # Small, side-by-side
-
-    # Plot Partial Marks if available
-    if 'nota_parcial' in edit_df.columns and not edit_df['nota_parcial'].dropna().empty:
-        axes[0].hist(edit_df['nota_parcial'].dropna(), bins=10, edgecolor='black', color="#197100")
-        axes[0].set_title("Partial Marks")
-        axes[0].set_xlabel("Mark")
-        axes[0].set_ylabel("Students")
-
-    # Plot Final Marks if available
-    if 'nota_final' in edit_df.columns and not edit_df['nota_final'].dropna().empty:
-        axes[1].hist(edit_df['nota_final'].dropna(), bins=10, edgecolor='black', color="#197100")
-        axes[1].set_title("Final Marks")
-        axes[1].set_xlabel("Mark")
-        axes[1].set_ylabel("Students")
-
-    plt.tight_layout()
-    st.pyplot(fig)
-
-except Exception as e:
-    st.error(f"Error generating distribution charts: {e}")
