@@ -1,0 +1,12 @@
+# Ignore virtual environments
+venv/
+.env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# dotenv or local environment config
+.env
+*.env
