@@ -49,7 +49,7 @@ client = cargar_credenciales()
 st.markdown('<div class="titulo-uab"><h1>Campus Virtual - Teacher Panel</h1></div>', unsafe_allow_html=True)
 st.markdown('<div class="uab-subtitle">Welcome to Subject X</div>', unsafe_allow_html=True)
 
-user_id = st.text_input("Enter your ID")
+user_id = st.text_input("Enter your teacher ID")
 
 if user_id:
     st.markdown(f'<div class="uab-box">Welcome Teacher: <b>{user_id}</b></div>', unsafe_allow_html=True)
@@ -67,17 +67,17 @@ if user_id:
             sheet_file = client.create(sheet_name)
             hoja = sheet_file.sheet1
             hoja.update([base_inicial.columns.tolist()] + base_inicial.values.tolist())
-            st.success("✅ Google Sheet created from base_inicial.csv")
+            st.success("Google Sheet created from base_inicial.csv")
 
         sheet = sheet_file.sheet1
         sheet_url = sheet_file.url
 
-        st.info(f"🔗 [Open your Google Sheet here]({sheet_url})")
+        st.info(f"[Open your Google Sheet here]({sheet_url})")
 
-        st.subheader("📋 Fill in the marks:")
+        st.subheader("Fill in the marks:")
         edit_df = st.data_editor(base_inicial, use_container_width=True, num_rows="dynamic")
 
-        if st.button("💾 Save changes to your private Google Sheet"):
+        if st.button("Save changes to your private Google Sheet"):
             try:
                 sheet.update([edit_df.columns.values.tolist()] + edit_df.values.tolist())
                 st.success("Changes successfully saved to Google Sheet")
@@ -93,7 +93,7 @@ if user_id:
                 edit_df['nota_final'] = edit_df['nota_final'].astype(str).str.replace(',', '.').astype(float)
 
             # Unified Statistics block
-            st.subheader("📊 Class Statistics:")
+            st.subheader("Class Statistics:")
             stats = {}
 
             if 'nota_parcial' in edit_df.columns:
@@ -126,7 +126,7 @@ else:
 # ---------------------- Grade Distribution Histograms ----------------------
 import matplotlib.pyplot as plt
 
-st.subheader("📈 Grades Distribution:")
+st.subheader("Grades Distribution:")
 
 # This is just if we want to print one plot. They appeared TOO BIG and I 
 # thought that maybe just putting both side by side would be useful but 
@@ -157,14 +157,14 @@ try:
 
     # Plot Partial Marks if available
     if 'nota_parcial' in edit_df.columns and not edit_df['nota_parcial'].dropna().empty:
-        axes[0].hist(edit_df['nota_parcial'].dropna(), bins=10, edgecolor='black', color='#1f77b4')
+        axes[0].hist(edit_df['nota_parcial'].dropna(), bins=10, edgecolor='black', color="#197100")
         axes[0].set_title("Partial Marks")
         axes[0].set_xlabel("Mark")
         axes[0].set_ylabel("Students")
 
     # Plot Final Marks if available
     if 'nota_final' in edit_df.columns and not edit_df['nota_final'].dropna().empty:
-        axes[1].hist(edit_df['nota_final'].dropna(), bins=10, edgecolor='black', color='#ff7f0e')
+        axes[1].hist(edit_df['nota_final'].dropna(), bins=10, edgecolor='black', color="#197100")
         axes[1].set_title("Final Marks")
         axes[1].set_xlabel("Mark")
         axes[1].set_ylabel("Students")
