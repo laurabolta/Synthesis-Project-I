@@ -32,8 +32,23 @@ def send_alert(classroom, final_data, time_str, date_str, co2_level):
         for _, row in active_classes.iterrows():
             print(f"ALERT: CO₂ level is {co2_level} ppm in {classroom} during '{row['Assignatura']}'")
             print(f"Notifying professor(s): {row['Id Anònim PD']}")
+    
+    # Append to shared CSV 
+            alert_entry = {
+                "ProfessorID": row['Id Anònim PD'],
+                "Classroom": classroom,
+                "Date": date_str,
+                "Time": time_str,
+                "CO2_ppm": co2_level,
+                "Subject": row['Assignatura'],
+                "Codi_Ass": row['Codi_Ass']
+            }
+            pd.DataFrame([alert_entry]).to_csv("co2_alerts_log.csv", mode="a", index=False, header=not pd.io.common.file_exists("co2_alerts_log.csv"))
+    
+    
     else:
         print(f"No active class found in {classroom} at {time_str} on {date_str}.")
+
 
 
 WATCHED_DEVICES = {
