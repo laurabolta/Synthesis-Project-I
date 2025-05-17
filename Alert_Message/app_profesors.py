@@ -3,7 +3,8 @@ import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import matplotlib.pyplot as plt
-
+import os
+import json
 # ---------------------- Page config ----------------------
 st.set_page_config(page_title="Campus Virtual - Teacher Panel", layout="wide")
 
@@ -40,6 +41,13 @@ credenciales = "credenciales_google.json"
 base_csv = "base_inicial.csv"
 curso_actual = "2024/2025"
 csv_central = "estudiants_net.csv"
+sheet_map_file = "sheet_map.json" 
+
+if os.path.exists(sheet_map_file):
+    with open(sheet_map_file, "r") as f:
+        sheet_map = json.load(f)
+else:
+    sheet_map = {}
 
 def cargar_credenciales():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -48,6 +56,38 @@ def cargar_credenciales():
 
 client = cargar_credenciales()
 
+def get_or_create_sheet(client, sheet_name, base_inicial):
+    """
+    Intenta abrir una Google Sheet con el nombre sheet_name.
+    Si no existe, la crea y la inicializa con base_inicial.
+    """
+    try:
+        sheet_file = client.open(sheet_name)
+        return sheet_file
+    except gspread.exceptions.SpreadsheetNotFound:
+        sheet_file = client.create(sheet_name)
+        hoja = sheet_file.sheet1
+        hoja.update([base_inicial.columns.tolist()] + base_inicial.values.tolist())
+        # Opcional: compartir la hoja con tu email o con la cuenta de servicio
+        # sheet_file.share('tu-email@dominio.com', perm_type='user', role='writer')
+        st.success(f"Google Sheet '{sheet_name}' creada desde base_inicial.csv")
+        return sheet_file
+
+def crear_sheet(user_id, base_inicial):
+    sheet_name = f"Notas_{user_id}"
+    sheet_file = client.create(sheet_name)
+    hoja = sheet_file.sheet1
+    hoja.update([base_inicial.columns.tolist()] + base_inicial.values.tolist())
+    # Guardar ID en map
+    sheet_map[user_id] = sheet_file.id
+    guardar_map()
+    st.success(f"Google Sheet '{sheet_name}' creada desde base_inicial.csv")
+    return sheet_file
+
+def guardar_map():
+    with open(sheet_map_file, "w") as f:
+        json.dump(sheet_map, f)
+
 # ---------------------- Processing ----------------------
 st.markdown('<div class="titulo-uab"><h1>Campus Virtual - Teacher Panel</h1></div>', unsafe_allow_html=True)
 st.markdown('<div class="uab-subtitle">Welcome to Subject X</div>', unsafe_allow_html=True)
@@ -55,26 +95,12 @@ st.markdown('<div class="uab-subtitle">Welcome to Subject X</div>', unsafe_allow
 user_id = st.text_input("Enter your teacher ID")
 
 if user_id:
-    st.markdown(f'<div class="uab-box">Welcome Teacher: <b>{user_id}</b></div>', unsafe_allow_html=True)
-    sheet_name = f"Notas_{user_id}"
-
+    st.markdown(f"Welcome Teacher: **{user_id}**")
     try:
-        # Always load local CSV
         base_inicial = pd.read_csv(base_csv, sep=";")
-
-        # Check/create Sheet and open once
-        try:
-            sheet_file = client.open(sheet_name)
-        except:
-            sheet_file = client.create(sheet_name)
-            hoja = sheet_file.sheet1
-            hoja.update([base_inicial.columns.tolist()] + base_inicial.values.tolist())
-            st.success("Google Sheet created from base_inicial.csv")
-
+        sheet_file = get_or_create_sheet(user_id, base_inicial)
         sheet = sheet_file.sheet1
-        sheet_url = sheet_file.url
-
-        st.info(f"[Open your Google Sheet here]({sheet_url})")
+        st.info(f"[Open your Google Sheet here]({sheet_file.url})")
 
         st.subheader("Fill in the marks:")
         edit_df = st.data_editor(base_inicial, use_container_width=True, num_rows="dynamic")
