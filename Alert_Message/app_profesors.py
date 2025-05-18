@@ -5,6 +5,8 @@ from oauth2client.service_account import ServiceAccountCredentials
 import matplotlib.pyplot as plt
 import os
 import json
+from googleapiclient.discovery import build
+
 # ---------------------- Page config ----------------------
 st.set_page_config(page_title="Campus Virtual - Teacher Panel", layout="wide")
 
@@ -37,11 +39,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------- Config & Google Sheets ----------------------
+#https://drive.google.com/drive/u/0/folders/1yu3K29KFCNh0hPv5vDnnDJNdAJULkvzv
+
 credenciales = "credenciales_google.json"
 base_csv = "base_inicial.csv"
 curso_actual = "2024/2025"
 csv_central = "estudiants_net.csv"
 sheet_map_file = "sheet_map.json" 
+FOLDER_ID = "1yu3K29KFCNh0hPv5vDnnDJNdAJULkvzv"  #folder in our drive shared
+
 
 if os.path.exists(sheet_map_file):
     with open(sheet_map_file, "r") as f:
@@ -52,36 +58,31 @@ else:
 def cargar_credenciales():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_name(credenciales, scope)
-    return gspread.authorize(creds)
+    client = gspread.authorize(creds)
+    return client, creds
 
-client = cargar_credenciales()
+client, creds = cargar_credenciales()
 
-def get_or_create_sheet(client, sheet_name, base_inicial):
-    """
-    Intenta abrir una Google Sheet con el nombre sheet_name.
-    Si no existe, la crea y la inicializa con base_inicial.
-    """
+
+def get_or_create_sheet(user_id, base_inicial):
+    sheet_name = f"Notas_{user_id}"
     try:
-        sheet_file = client.open(sheet_name)
-        return sheet_file
-    except gspread.exceptions.SpreadsheetNotFound:
-        sheet_file = client.create(sheet_name)
-        hoja = sheet_file.sheet1
-        hoja.update([base_inicial.columns.tolist()] + base_inicial.values.tolist())
-        # Opcional: compartir la hoja con tu email o con la cuenta de servicio
-        # sheet_file.share('tu-email@dominio.com', perm_type='user', role='writer')
-        st.success(f"Google Sheet '{sheet_name}' creada desde base_inicial.csv")
-        return sheet_file
+        return client.open(sheet_name)
+    except gspread.SpreadsheetNotFound:
+        # Si no existe, crea la hoja usando crear_sheet que maneja todo bien
+        return crear_sheet(user_id, base_inicial)
 
 def crear_sheet(user_id, base_inicial):
     sheet_name = f"Notas_{user_id}"
-    sheet_file = client.create(sheet_name)
+    sheet_file = client.create(sheet_name, folder_id=FOLDER_ID)
     hoja = sheet_file.sheet1
     hoja.update([base_inicial.columns.tolist()] + base_inicial.values.tolist())
-    # Guardar ID en map
+    # Compartir con cualquiera que tenga el enlace (puedes ajustar permisos)
+    sheet_file.share(None, perm_type='anyone', role='writer')
+    # Guardar ID en el map para referencia futura
     sheet_map[user_id] = sheet_file.id
     guardar_map()
-    st.success(f"Google Sheet '{sheet_name}' creada desde base_inicial.csv")
+    st.success(f"Google Sheet '{sheet_name}' creada desde base_inicial.csv y guardada en el folder.")
     return sheet_file
 
 def guardar_map():
@@ -93,17 +94,44 @@ st.markdown('<div class="titulo-uab"><h1>Campus Virtual - Teacher Panel</h1></di
 st.markdown('<div class="uab-subtitle">Welcome to Subject X</div>', unsafe_allow_html=True)
 
 user_id = st.text_input("Enter your teacher ID")
-
 if user_id:
     st.markdown(f"Welcome Teacher: **{user_id}**")
     try:
         base_inicial = pd.read_csv(base_csv, sep=";")
         sheet_file = get_or_create_sheet(user_id, base_inicial)
         sheet = sheet_file.sheet1
+
+        # Este paso ya se hace dentro de crear_sheet, así que si quieres evitar duplicados puedes comentar esta línea:
+        # sheet_file.share(None, perm_type='anyone', role='writer')
+
         st.info(f"[Open your Google Sheet here]({sheet_file.url})")
 
         st.subheader("Fill in the marks:")
-        edit_df = st.data_editor(base_inicial, use_container_width=True, num_rows="dynamic")
+
+        # Leer datos actuales de la hoja de cálculo
+        data_from_sheet = sheet.get_all_values()
+        edit_df = pd.DataFrame(data_from_sheet[1:], columns=data_from_sheet[0])  # Excluir encabezado duplicado
+
+        # Convertir columnas numéricas
+        for col in ["nota_parcial", "nota_final"]:
+            if col in edit_df.columns:
+                edit_df[col] = edit_df[col].astype(str).str.replace(",", ".").astype(float)
+
+        st.data_editor(edit_df, use_container_width=True, num_rows="dynamic")
+
+        if st.button(" Shared with Admin"):
+            try:
+                drive_service = build("drive", "v3", credentials=creds)
+                file_id = sheet_file.id
+                drive_service.files().update(
+                    fileId=file_id,
+                    addParents=FOLDER_ID,
+                    removeParents='root',
+                    fields='id, parents'
+                ).execute()
+                st.success("Hoja movida exitosamente a la carpeta del admin.")
+            except Exception as e:
+                st.error(f"Error al mover la hoja: {e}")
 
         if st.button("Save changes to your private Google Sheet"):
             try:
