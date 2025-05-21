@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import os
 import json
 from googleapiclient.discovery import build
+from datetime import datetime
 
 # ---------------------- Page config ----------------------
 st.set_page_config(page_title="Campus Virtual - Teacher Panel", layout="wide")
@@ -89,6 +90,21 @@ def guardar_map():
     with open(sheet_map_file, "w") as f:
         json.dump(sheet_map, f)
 
+def is_alert_active(alert_row):
+    # Check if alert is for today
+    now = datetime.now()
+    alert_date = datetime.strptime(alert_row["Date"], "%d/%m/%Y").date()
+    if alert_date != now.date():
+        return False
+
+    # Check if current time is within class time
+    start_time = datetime.strptime(alert_row["AlertTime"], "%H:%M")
+    end_time = datetime.strptime(alert_row["EndTime"], "%H:%M")
+
+    return start_time.time() <= now.time() <= end_time.time()
+
+
+
 # ---------------------- Processing ----------------------
 st.markdown('<div class="titulo-uab"><h1>Campus Virtual - Teacher Panel</h1></div>', unsafe_allow_html=True)
 st.markdown('<div class="uab-subtitle">Welcome to Subject X</div>', unsafe_allow_html=True)
@@ -97,6 +113,28 @@ user_id = st.text_input("Enter your teacher ID")
 if user_id:
     st.markdown(f"Welcome Teacher: **{user_id}**")
     try:
+        # Load alerts for this professor
+        if os.path.exists("co2_alerts_log.csv"):
+            all_alerts = pd.read_csv("co2_alerts_log.csv")
+            user_alerts = all_alerts[all_alerts["ProfessorID"] == user_id]
+            active_alerts = user_alerts[user_alerts.apply(is_alert_active, axis=1)]
+
+            if not active_alerts.empty:
+                st.subheader("URGENT: CO₂ Alerts for your Classes:")
+                st.dataframe(active_alerts)
+                st.warning("""
+                    ### Recommended Actions to reduce CO₂ levels:
+                    - **Ventilate** the classroom (open windows/doors)  
+                    - **Reduce occupancy** if possible  
+                    - **Continue monitoring** air quality with sensors  
+                    - Consider taking short breaks to allow air renewal
+                    """)
+
+            else:
+                st.info("No CO₂ alerts recorded for your sessions.")
+        else:
+            st.info("No alert log found.")
+
         base_inicial = pd.read_csv(base_csv, sep=";")
         sheet_file = get_or_create_sheet(user_id, base_inicial)
         sheet = sheet_file.sheet1
@@ -104,8 +142,7 @@ if user_id:
         # Este paso ya se hace dentro de crear_sheet, así que si quieres evitar duplicados puedes comentar esta línea:
         # sheet_file.share(None, perm_type='anyone', role='writer')
 
-        st.info(f"[Open your Google Sheet here]({sheet_file.url})")
-
+        st.info(f"[Open your Google Sheet here]({sheet_file.url})")        
         st.subheader("Fill in the marks:")
 
         # Leer datos actuales de la hoja de cálculo

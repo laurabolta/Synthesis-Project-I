@@ -3,6 +3,7 @@ import paho.mqtt.client as mqtt
 import json
 from datetime import datetime
 import pandas as pd
+import os
 
 # Load and preprocess final_data from CSV
 final_data = pd.read_csv('Sensors/merged_occupacio_professors.csv')
@@ -29,22 +30,33 @@ def send_alert(classroom, final_data, time_str, date_str, co2_level):
     active_classes = candidates[candidates.apply(is_within, axis=1)]
 
     if not active_classes.empty:
+        # Save the info in Alert_Message folder
+        alert_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Alert_Message")
+        os.makedirs(alert_dir, exist_ok=True)  # Create folder if it doesn't exist
+        alert_file_path = os.path.join(alert_dir, "co2_alerts_log.csv")
+
         for _, row in active_classes.iterrows():
             print(f"ALERT: CO₂ level is {co2_level} ppm in {classroom} during '{row['Assignatura']}'")
             print(f"Notifying professor(s): {row['Id Anònim PD']}")
-    
-    # Append to shared CSV 
+
             alert_entry = {
                 "ProfessorID": row['Id Anònim PD'],
                 "Classroom": classroom,
                 "Date": date_str,
-                "Time": time_str,
+                "AlertTime": time_str,
+                "StartTime": row["start time"],
+                "EndTime": row["end time"],
                 "CO2_ppm": co2_level,
-                "Subject": row['Assignatura'],
-                "Codi_Ass": row['Codi_Ass']
+                "Subject": row["Assignatura"]
             }
-            pd.DataFrame([alert_entry]).to_csv("co2_alerts_log.csv", mode="a", index=False, header=not pd.io.common.file_exists("co2_alerts_log.csv"))
-    
+
+            # Write or append the alert
+            pd.DataFrame([alert_entry]).to_csv(
+                alert_file_path,
+                mode="a",
+                index=False,
+                header=not os.path.exists(alert_file_path)
+            )
     
     else:
         print(f"No active class found in {classroom} at {time_str} on {date_str}.")

@@ -4,3 +4,5 @@ gspread
 oauth2client
 Flask
 matplotlib
+google-api-python-client
+paho.mqtt.client   # CO2
