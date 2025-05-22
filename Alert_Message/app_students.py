@@ -3,6 +3,7 @@ import pandas as pd
 import gspread
 from datetime import datetime
 
+
 # ---------------------- Page config ----------------------
 st.set_page_config(page_title="Campus Virtual - Student Panel", layout="wide")
 
@@ -56,22 +57,30 @@ user_id = st.text_input("Enter your student ID (Alumne)")
 
 if user_id:
     try:
-        df = pd.read_csv("Students/estudiants_AI.csv", dtype=str)
-        curs_actual = obtener_curs_academic_actual()
+        df = pd.read_csv("alertas_academicas.csv")
 
-        # Filtrar por el estudiante y el curso actual
-        data_estudiant = df[(df["Alumne"] == user_id.upper()) & (df["Curs acadèmic"] == curs_actual)]
+        # Ensure numeric conversion
+        df["nota_assignatura"] = pd.to_numeric(df["nota_assignatura"], errors='coerce')
+        df["predicted_nota_assignatura"] = pd.to_numeric(df["predicted_nota_assignatura"], errors='coerce')
 
-        if not data_estudiant.empty:
-            estudi = data_estudiant.iloc[0]["Assignatura"]
-            st.markdown("###  Assignatures cursades:")
+        # Filter by user and grade drop > 2
+        data_estudiant = df[df["id_anonim"] == user_id]
+        data_dropped = data_estudiant[
+            (data_estudiant["predicted_nota_assignatura"] - data_estudiant["nota_assignatura"]) > 2
+        ]
 
-            for _, row in data_estudiant.iterrows():
-                st.markdown(f'<div class="uab-subtitle"> {row["Assignatura"]} — Nota: <b>{row["Nota_assignatura"]}</b></div>', unsafe_allow_html=True)
+        if not data_dropped.empty:
+            st.markdown("### Assignatures amb baixada de nota > 2 punts:")
+            for _, row in data_dropped.iterrows():
+                st.markdown(f'''
+                    <div class="uab-subtitle">
+                        {row["assignatura"]} — Predicció: <b>{row["predicted_nota_assignatura"]}</b>,
+                        Real: <b>{row["nota_assignatura"]}</b>
+                    </div>
+                ''', unsafe_allow_html=True)
         else:
-            st.warning(f"No s’han trobat assignatures per a l’alumne <b>{user_id}</b> al curs <b>{curs_actual}</b>.", icon="⚠️")
-
+            st.info("No hi ha assignatures amb una baixada de més de 2 punts.")
     except FileNotFoundError:
-        st.error("El fitxer estudiants_AI.csv no s'ha trobat.")
+        st.error("El fitxer alertas_academicas.csv no s'ha trobat.")
     except Exception as e:
         st.error(f"Error carregant dades: {e}")
