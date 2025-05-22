@@ -1,7 +1,7 @@
-name: myenv
+name: synthesis
 channels:
-  - defaults
   - conda-forge
+  - defaults
 dependencies:
   - python=3.9
   - pandas
@@ -9,3 +9,5 @@ dependencies:
   - scikit-learn
   - matplotlib
   - seaborn
+  - imbalanced-learn
+  - xgboost
