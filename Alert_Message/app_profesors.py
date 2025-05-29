@@ -7,37 +7,87 @@ import os
 import json
 from googleapiclient.discovery import build
 from datetime import datetime
+import base64
 
 # ---------------------- Page config ----------------------
 st.set_page_config(page_title="Campus Virtual - Teacher Panel", layout="wide")
+
+
+# ---------------------- Background ----------------------
+def set_background(image_path):
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode()
+    
+    background_css = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded_string}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    </style>
+    """
+    st.markdown(background_css, unsafe_allow_html=True)
+
+set_background("campus.png")
 
 # ---------------------- UAB CV Style ----------------------
 st.markdown("""
     <style>
         .titulo-uab {
-            background-color: #f1f1f1;
+            background-color: #147d00cc;
             padding: 20px;
             border-radius: 8px;
-            border-left: 8px solid #00703c;
+            border-left: 8px solid #ffffff;
         }
         .titulo-uab h1 {
             margin: 0;
             font-size: 28px;
-            color: #333333;
+            color: white;
         }
         .uab-subtitle {
-            color: #00703c;
+            color: #ffffff;
             font-weight: bold;
             margin-bottom: 20px;
         }
         .uab-box {
-            background-color: #ffffff;
+            background-color: #ffffffcc;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #00a8cc;
+        }
+        h2, h3, h4 {
+            color: white !important;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+            font-weight: 700;
+        }
+        .stButton>button {
+            background-color: #00a8cc;
+            color: white;
+            border-radius: 8px;
+            border: none;
+        }
+        .stButton>button:hover {
+            background-color: #147d00;
+        }
+        .stTextInput>div>div>input {
+            background-color: #ffffffdd;
+            border: 1px solid #00a8cc;
+            color: #147d00;
+        }
+        .stMarkdown, .stAlert, .stTextInput label {
+            color: white !important;
+        }
+        .stAlert {
+            color: white !important;
+            background-color: #00a8cc33 !important;  /* fons turquesa translúcid */
+            border-left: 5px solid #ffffff !important;  /* borde blanc */
         }
     </style>
 """, unsafe_allow_html=True)
+
 
 # ---------------------- Config & Google Sheets ----------------------
 #https://drive.google.com/drive/u/0/folders/1yu3K29KFCNh0hPv5vDnnDJNdAJULkvzv
@@ -279,4 +329,5 @@ if user_id:
 else:
     st.info("Please enter your anonymous Teacher ID to begin.")
 # ---------------------- Grade Distribution Histograms ----------------------
+
 

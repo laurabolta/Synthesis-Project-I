@@ -2,38 +2,87 @@ import streamlit as st
 import pandas as pd
 import gspread
 from datetime import datetime
+import base64
 
 
 # ---------------------- Page config ----------------------
 st.set_page_config(page_title="Campus Virtual - Student Panel", layout="wide")
 
+# ---------------------- Background ----------------------
+def set_background(image_path):
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode()
+    
+    background_css = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded_string}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    </style>
+    """
+    st.markdown(background_css, unsafe_allow_html=True)
+
+set_background("campus.png")
+
 # ---------------------- UAB CV Style ----------------------
 st.markdown("""
     <style>
+    <style>
+        .stApp {
+            background-image: url("data:image/png;base64,..."); /* ja el tens configurat */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: white !important;  /* <- això fa que tot el text sigui blanc */
+        }
         .titulo-uab {
-            background-color: #f1f1f1;
+            background-color: #147d00cc;
             padding: 20px;
             border-radius: 8px;
-            border-left: 8px solid #00703c;
+            border-left: 8px solid #ffffff;
         }
         .titulo-uab h1 {
             margin: 0;
             font-size: 28px;
-            color: #333333;
+            color: white;
         }
         .uab-subtitle {
-            color: #00703c;
+            color: #ffffff;
             font-weight: bold;
             margin-bottom: 20px;
         }
         .uab-box {
-            background-color: #ffffff;
+            background-color: #ffffff33;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #00a8cc;
+        }
+        h2, h3, h4, p, div, span, li {
+            color: white !important;
+        }
+        label {
+            color: white !important;
+        }
+        .stTextInput label {
+            color: white !important;
+        }
+        .stAlert {
+            color: white !important;
+            background-color: #00a8cc33 !important;
+            border-left: 5px solid #ffffff !important;
+        }
+        h1, h2, h3, h4 {
+            color: white !important;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+            font-weight: 700;
         }
     </style>
 """, unsafe_allow_html=True)
+
 
 # ---------------------- Config & Google Sheets ----------------------
 csv_estudiants = "estudiants_AI.csv"
@@ -86,7 +135,7 @@ if user_id:
 
                 st.write(f"####  {assignatura}")
                 st.write(f"**Predicció de nota:** {prediccio:.2f}")
-                st.write(f"Tienes que esforzarte más, aquí tienes unos ejercicios para reforzar")
+                st.write(f"#### Estàs a temps de millorar! Prova aquests exercicis de reforç:")
 
                 st.write("#####  Exercicis de reforç")
                 st.markdown(f"[Descarregar PDF d'exercicis]({pdf_link})", unsafe_allow_html=False)
