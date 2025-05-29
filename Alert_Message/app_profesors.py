@@ -279,9 +279,10 @@ if user_id:
                 }
 
             for category, values in stats.items():
-                st.write(f"**{category}:**")
+                st.markdown(f'<p style="font-size:20px; font-weight:bold; color:white;">{category}:</p>', unsafe_allow_html=True)
                 for stat_name, stat_value in values.items():
-                    st.write(f"- {stat_name}: {stat_value:.2f}")
+                    st.markdown(f'<p style="font-size:18px; color:white; margin-left:20px;">- {stat_name}: {stat_value:.2f}</p>', unsafe_allow_html=True)
+
 
         except Exception as e:
             st.error(f"Error in statistics: {e}")
