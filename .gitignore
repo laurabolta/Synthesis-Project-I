@@ -10,3 +10,5 @@ __pycache__/
 # dotenv or local environment config
 .env
 *.env
+.env/
+.DS_Store
