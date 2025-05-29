@@ -106,3 +106,4 @@ numerical_df.to_csv("NUMDATASET.csv", index=False)
 # Visualize an example of an entry in our dataset
 print('Example of an entry of the cleaned DataFrame:\n')
 print(numerical_df.iloc[10])
+print(clean_df['abandonament'].value_counts())
