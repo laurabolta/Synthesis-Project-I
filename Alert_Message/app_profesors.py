@@ -172,14 +172,24 @@ if user_id:
             if not active_alerts.empty:
                 st.subheader("URGENT: CO₂ Alerts for your Classes:")
                 st.dataframe(active_alerts)
-                st.warning("""
-                    ### Recommended Actions to reduce CO₂ levels:
-                    - **Ventilate** the classroom (open windows/doors)  
-                    - **Reduce occupancy** if possible  
-                    - **Continue monitoring** air quality with sensors  
-                    - Consider taking short breaks to allow air renewal
-                    """)
-
+                st.markdown("""
+                    <div style="
+                        background-color: rgba(204, 0, 0, 0.8);  /* red with 80 opacity */
+                        color: #ffffff;
+                        padding: 15px;
+                        border-radius: 5px;
+                        border: 1px solid rgba(153, 0, 0, 0.9);
+                        font-weight: 600;
+                        ">
+                        <h3>Recommended Actions to reduce CO₂ levels:</h3>
+                        <ul>
+                            <li><b>Ventilate</b> the classroom (open windows/doors)</li>
+                            <li><b>Reduce occupancy</b> if possible</li>
+                            <li><b>Continue monitoring</b> air quality with sensors</li>
+                            <li>Consider taking short breaks to allow air renewal</li>
+                        </ul>
+                    </div>
+                    """, unsafe_allow_html=True)
             else:
                 st.info("No CO₂ alerts recorded for your sessions.")
         else:
