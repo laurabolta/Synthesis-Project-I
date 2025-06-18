@@ -231,7 +231,7 @@ if user_id:
             try:
                 sheet.update([edit_df.columns.values.tolist()] + edit_df.values.tolist())
                 st.success("Changes successfully saved to Google Sheet")
-                ruta_central = "estudiants_net.csv"
+                ruta_central = "files/estudiants_net.csv"
                 df_central = pd.read_csv(ruta_central)
                 if "nota_parcial" not in df_central.columns:
                     df_central["nota_parcial"] = None
@@ -243,11 +243,11 @@ if user_id:
                     df_actualizado = df_central.merge(edit_df[["id_anonim", "nota_parcial"]], on="id_anonim", how="left")
 
                     df_actualizado.to_csv(ruta_central, index=False)
-                    st.success("Archivo central 'estudiants_net.csv' actualizado con nuevas notas.")
+                    st.success("Central file 'estudiants_net.csv' updated with new grades.")
                 else:
-                    st.warning("No se encontró la columna 'nota_parcial' o 'id_anonim' para actualizar el CSV central.")
+                    st.warning("The column 'nota_parcial' or 'id_anonim' was not found to update the central CSV.")
             except Exception as e:
-                st.error(f"No se pudieron guardar los cambios: {e}")
+                st.error(f"Could not save the changes: {e}")
 
         # Convert marks columns to numeric safely (handling commas and points)
         try:
