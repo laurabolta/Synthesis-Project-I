@@ -103,7 +103,6 @@ def obtener_curs_academic_actual():
 st.markdown('<div class="titulo-uab"><h1>Campus Virtual - Student Panel</h1></div>', unsafe_allow_html=True)
 
 user_id = st.text_input("Enter your student ID (Alumne)")
-
 if user_id:
     try:
         df = pd.read_csv("files/alertas_academicas.csv")
@@ -122,30 +121,43 @@ if user_id:
         ]
 
         if not data_problemes.empty:
-            st.markdown("###  Assignatures amb dificultats identificades")
+            st.markdown("### Subjects with Identified Difficulties")
             for _, row in data_problemes.iterrows():
                 assignatura = row["assignatura"]
                 prediccio = row["predicted_nota_assignatura"]
-                id_assig = assignatura.replace(" ", "_").replace("/", "_")  # Limpieza adicional
+                id_assig = assignatura.replace(" ", "_").replace("/", "_")  # Clean-up for file name
 
                 # links
-                pdf_link = f"/files/ejercicios_{id_assig}.pdf"
+                # to use the exercises of each subject we use this line of code
+                # pdf_link = f"/files/ejercicios_{id_assig}.pdf"
+                # now we use an example file
+                pdf_path = "files/Exercises_example.pdf"
                 tutoria_link = "https://calendly.com/dkaratzas/tutoring?month=2025-05"
 
-                st.write(f"####  {assignatura}")
-                st.write(f"**Predicció de nota:** {prediccio:.2f}")
-                st.write(f"#### Estàs a temps de millorar! Prova aquests exercicis de reforç:")
+                st.write(f"#### {assignatura}")
+                # st.write(f"**Predicted grade:** {prediccio:.2f}")
+                st.write(f"#### There's still time to improve! Try these practice exercises:")
 
-                st.write("#####  Exercicis de reforç")
-                st.markdown(f"[Descarregar PDF d'exercicis]({pdf_link})", unsafe_allow_html=False)
+                st.write("##### Practice Exercises")
+                try:
+                    with open(pdf_path, "rb") as f:
+                        pdf_bytes = f.read()
+                    st.download_button(
+                        label=" Download Practice Exercises PDF",
+                        data=pdf_bytes,
+                        file_name="Exercises_example.pdf",
+                        mime="application/pdf"
+                    )
+                except FileNotFoundError:
+                    st.warning("Practice exercises file not found.")
 
-                st.write("#####  Tutoria amb el professor")
-                st.markdown(f"[Reservar tutoria al Calendly]({tutoria_link})", unsafe_allow_html=False)
+                st.write("##### Schedule a Tutoring Session with the Teacher")
+                st.markdown(f"[Book a tutoring session on Calendly]({tutoria_link})", unsafe_allow_html=False)
 
                 st.markdown("---")
         else:
-            st.info("No hi ha assignatures amb dificultats actualment.")
+            st.info("There are currently no subjects with identified difficulties.")
     except FileNotFoundError:
-        st.error("El fitxer alertas_academicas.csv no s'ha trobat.")
+        st.error("The file 'alertas_academicas.csv' was not found.")
     except Exception as e:
-        st.error(f"Error carregant dades: {e}")
+        st.error(f"Error loading data: {e}")
