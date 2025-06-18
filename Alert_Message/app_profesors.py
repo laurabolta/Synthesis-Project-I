@@ -30,7 +30,7 @@ def set_background(image_path):
     """
     st.markdown(background_css, unsafe_allow_html=True)
 
-set_background("campus.png")
+set_background("files/campus.png")
 
 # ---------------------- UAB CV Style ----------------------
 st.markdown("""
@@ -92,11 +92,11 @@ st.markdown("""
 # ---------------------- Config & Google Sheets ----------------------
 #https://drive.google.com/drive/u/0/folders/1yu3K29KFCNh0hPv5vDnnDJNdAJULkvzv
 
-credenciales = "credenciales_google.json"
-base_csv = "base_inicial.csv"
+credenciales = "files/credenciales_google.json"
+base_csv = "files/base_inicial.csv"
 curso_actual = "2024/2025"
-csv_central = "estudiants_net.csv"
-sheet_map_file = "sheet_map.json" 
+csv_central = "files/estudiants_net.csv"
+sheet_map_file = "files/sheet_map.json"
 FOLDER_ID = "1yu3K29KFCNh0hPv5vDnnDJNdAJULkvzv"  #folder in our drive shared
 
 
@@ -120,7 +120,7 @@ def get_or_create_sheet(user_id, base_inicial):
     try:
         return client.open(sheet_name)
     except gspread.SpreadsheetNotFound:
-        # Si no existe, crea la hoja usando crear_sheet que maneja todo bien
+        # if doesn't exist, create a new sheet 
         return crear_sheet(user_id, base_inicial)
 
 def crear_sheet(user_id, base_inicial):
@@ -128,9 +128,9 @@ def crear_sheet(user_id, base_inicial):
     sheet_file = client.create(sheet_name, folder_id=FOLDER_ID)
     hoja = sheet_file.sheet1
     hoja.update([base_inicial.columns.tolist()] + base_inicial.values.tolist())
-    # Compartir con cualquiera que tenga el enlace (puedes ajustar permisos)
+    # share with anyone that has the link (you can adjust the acces permissions) 
     sheet_file.share(None, perm_type='anyone', role='writer')
-    # Guardar ID en el map para referencia futura
+    # save ID for future references 
     sheet_map[user_id] = sheet_file.id
     guardar_map()
     st.success(f"Google Sheet '{sheet_name}' creada desde base_inicial.csv y guardada en el folder.")
@@ -164,8 +164,8 @@ if user_id:
     st.markdown(f"Welcome Teacher: **{user_id}**")
     try:
         # Load alerts for this professor
-        if os.path.exists("co2_alerts_log.csv"):
-            all_alerts = pd.read_csv("co2_alerts_log.csv")
+        if os.path.exists("files/co2_alerts_log.csv"):
+            all_alerts = pd.read_csv("files/co2_alerts_log.csv")
             user_alerts = all_alerts[all_alerts["ProfessorID"] == user_id]
             active_alerts = user_alerts[user_alerts.apply(is_alert_active, axis=1)]
 
@@ -199,17 +199,14 @@ if user_id:
         sheet_file = get_or_create_sheet(user_id, base_inicial)
         sheet = sheet_file.sheet1
 
-        # Este paso ya se hace dentro de crear_sheet, así que si quieres evitar duplicados puedes comentar esta línea:
-        # sheet_file.share(None, perm_type='anyone', role='writer')
-
         st.info(f"[Open your Google Sheet here]({sheet_file.url})")        
         st.subheader("Fill in the marks:")
 
-        # Leer datos actuales de la hoja de cálculo
+        # Read actual data on the paper_sheet 
         data_from_sheet = sheet.get_all_values()
-        edit_df = pd.DataFrame(data_from_sheet[1:], columns=data_from_sheet[0])  # Excluir encabezado duplicado
+        edit_df = pd.DataFrame(data_from_sheet[1:], columns=data_from_sheet[0])  # exclude header duplicate
 
-        # Convertir columnas numéricas
+        # convert numeric columns
         for col in ["nota_parcial", "nota_final"]:
             if col in edit_df.columns:
                 edit_df[col] = edit_df[col].astype(str).str.replace(",", ".").astype(float)

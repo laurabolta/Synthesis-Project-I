@@ -25,7 +25,7 @@ def set_background(image_path):
     """
     st.markdown(background_css, unsafe_allow_html=True)
 
-set_background("campus.png")
+set_background("files/campus.png")
 
 # ---------------------- UAB CV Style ----------------------
 st.markdown("""
@@ -85,16 +85,15 @@ st.markdown("""
 
 
 # ---------------------- Config & Google Sheets ----------------------
-csv_estudiants = "estudiants_AI.csv"
-credenciales = "credenciales_google.json"
+csv_estudiants = "Students/estudiants_AI.csv"
+credenciales = "files/credenciales_google.json"
 tutoria_link = "https://calendly.com/dkaratzas/tutoring?month=2025-05"
-#es el de dimos, ns si quereis crear uno nuevo
 
 # ---------------------- Utilidades ----------------------
 def obtener_curs_academic_actual():
     hoy = datetime.today()
     any_actual = hoy.year
-    if hoy.month >= 9:  # nuevo curso empieza en septiembre
+    if hoy.month >= 9:  # new course starts in September
         return f"{any_actual}/{str(any_actual+1)[-2:]}"
     else:
         return f"{any_actual-1}/{str(any_actual)[-2:]}"
@@ -107,7 +106,7 @@ user_id = st.text_input("Enter your student ID (Alumne)")
 
 if user_id:
     try:
-        df = pd.read_csv("alertas_academicas.csv")
+        df = pd.read_csv("files/alertas_academicas.csv")
 
         # Ensure numeric conversion
         df["nota_assignatura"] = pd.to_numeric(df["nota_assignatura"], errors='coerce')
@@ -129,7 +128,7 @@ if user_id:
                 prediccio = row["predicted_nota_assignatura"]
                 id_assig = assignatura.replace(" ", "_").replace("/", "_")  # Limpieza adicional
 
-                # Enlaces
+                # links
                 pdf_link = f"/files/ejercicios_{id_assig}.pdf"
                 tutoria_link = "https://calendly.com/dkaratzas/tutoring?month=2025-05"
 
