@@ -1,17 +1,5 @@
 # Synthesis-Project-I: AI mentor program
 
-## Table of Contents
-
-- [Project Overview](#synthesis-project-i-ai-mentor-program)
-- [Key Features](#key-features)
-- [How to Set Up Environment and Dependencies](#how-to-set-up-environment-and-dependencies)
-  - [Using Conda Environment](#using-conda-environment)
-  - [Using pip Requirements](#using-pip-requirements)
-  - [Running the Alert Message Code](#running-the-alert-message-code)
-- [Folder Structure](#folder-structure)
-- [Authors](#authors)
-
-
 The goal of this project is to identify students who might be at risk of failing by using past academic data and machine learning. This helps schools to support students early, before problems happen. The project has two main parts: first, giving teachers useful information about their classes and students; second, sending alert messages to students at risk, with activities and exercises to help them succeed.
 
 ## Key Features
@@ -94,6 +82,33 @@ Synthesis-Project-I/
 ├── Models.ipynb                    # Regression models for predicting students' final marks
 ├── Student_plots.ipynb             # Data analysis: correlations and feature importance visualization
 ```
+
+**Important files:**
+
+- `DATASET.py` – Core script that generates a clean, unified dataset combining student, attendance, and sensor data. This dataset is used for both dropout and grade prediction models.
+
+- `DropOutModels.ipynb` – Contains machine learning models (classifiers) used to predict which students are likely to drop out.
+
+- `DropOut_Conclusions.ipynb` – Presents insights and reasoning based on the performance and results of the dropout models.
+
+- `Models.ipynb` – Implements several regression models to predict students’ final grades using the cleaned dataset.
+
+- `EarlyVsLate.ipynb` – Compares early and late fusion strategies in combining different types of features (e.g., attendance, sensors, academic) for grade prediction.
+
+- `Student_plots.ipynb` – Explores the dataset visually, analyzing feature importance, correlations, and distributions.
+
+- `Ensamble_trees_SUBJECTS.ipynb` – Serves as a baseline model using ensemble methods on individual subjects, used to compare against more general models.
+
+- `main.py` – Entry point script that may serve for orchestration, integration, or running specific parts of the pipeline.
+
+
+**Important Folders:**
+
+- `Alert_Message` - Contains the implementation of both students and professors applications...
+
+- `Sensors` - Contains the creation of the dataset and implementation of CO2 message alert...
+
+PONER MAS EXPLICACIONES DE FILES/DOCUMENTOS, SOLO HE PUESTO EJEMPLOS, SI QUEREIS MEJORAR LA EXPLICACIÓN TAMBIEN
 
 ## Authors
 
