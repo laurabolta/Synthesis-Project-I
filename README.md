@@ -14,7 +14,7 @@
 
 The goal of this project is to identify students who might be at risk of failing by using past academic data and machine learning. This helps schools to support students early, before problems happen. The project has two main parts: first, giving teachers useful information about their classes and students; second, sending alert messages to students at risk, with activities and exercises to help them succeed.
 
-### Key Features
+## Key Features
 - Predict students who are at risk of academic failure.
 - Send automated alerts to students and professors.
 - Web integration.
@@ -23,24 +23,33 @@ The goal of this project is to identify students who might be at risk of failing
 ![Alt text](Images/visualization.png)
 
 
-### How to set up environment and dependencies
+## How to set up environment and dependencies
 
-#### Using Conda Environment
+### Using Conda Environment
+
 The environment is defined in the file `synthesis.yml`
 
 To create the environment, run this command on your terminal:
-`conda env create -f synthesis.yml`
+
+```bash
+conda env create -f synthesis.yml
+```
 
 To activate the environment, use:
-`conda activate synthesis`
 
-#### Using pip Requirements
+```bash
+conda activate synthesis
+```
+
+### Using pip Requirements
 
 To install the Python packages listed in `requirements.txt`, run:
 
-`pip install -r requirements.txt`
+```bash
+pip install -r requirements.txt
+```
 
-#### Running the Alert Message Code
+### Running the Alert Message Code
 This project is a Streamlit web app for managing professor-related data and generating Excel files connected to Google Sheets.
 
 Main Apps:
@@ -48,7 +57,9 @@ Main Apps:
 - app_students.py
 To run the app, you first need to install the required Python packages (we recommend creating a conda environment for this project).
 
-`streamlit run app_profesors.py` or `streamlit run app_students.py`
+```bash
+streamlit run app_profesors.py` or `streamlit run app_students.py
+```
 
 The files/ folder contains all the resources needed for the app to work:
 - Exercises
@@ -56,7 +67,7 @@ The files/ folder contains all the resources needed for the app to work:
 - CSV files used to search for information
 - Files used to connect Google Sheets with the app
 
-### Folder Structure
+## Folder Structure
 
 Here we provide a partial view of the project structure, highlighting the most relevant files. We've omitted unimportant/generated files for clarity.
 
@@ -84,7 +95,7 @@ Synthesis-Project-I/
 ├── Student_plots.ipynb             # Data analysis: correlations and feature importance visualization
 ```
 
-### Authors
+## Authors
 
 - Anna Blanco | NIU:
 - Laura Boltà | NIU:
