@@ -28,19 +28,20 @@ To install the Python packages listed in `requirements.txt`, run:
 `pip install -r requirements.txt`
 
 #### Running the Alert Message Code
-streamlit.md (nombre del archivo, crealo porfa en Alert Message)
+This project is a Streamlit web app for managing professor-related data and generating Excel files connected to Google Sheets.
 
-Base inicial.csv tiene lo que le va a aparecer en el excel de la pagina web
+Main Apps:
+- app_profesors.py 
+- app_students.py
+To run the app, you first need to install the required Python packages (we recommend creating a conda environment for this project).
 
-App_profesors.py es donde esta la app de streamlit, para darle a run tenemos que descargar todos los paquetes importados (estaria bien crear un environment para todas - con el nombre de project o algo asi). Codigo de run
-""
-streamlit run app_profesors.py
-""
+`streamlit run app_profesors.py` or `streamlit run app_students.py`
 
-Carpeta professors es de donde cojemos la data.
-
-credenciales_google.json sirve para conectar lo que hacemos con una google sheet (online, que esta en la nube)
-Creamos una google sheet para cada professors, porque crear diferentes hojas para cada professor iria mucho mas lento.
+The files/ folder contains all the resources needed for the app to work:
+- Exercises
+- App background images
+- CSV files used to search for information
+- Files used to connect Google Sheets with the app
 
 ### Folder Structure
 
