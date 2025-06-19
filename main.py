@@ -1,10 +1,10 @@
-#importar modelos (solo se puede des de .py)
+#import models (only possible from .py)
 import joblib
 import os
 
 MODEL_PATH = 'ensemble_model.pkl'
 
-# Cargar el modelo entrenado
+# Upload trained model
 if os.path.exists(MODEL_PATH):
     ensemble_pipeline = joblib.load(MODEL_PATH)
 else:
