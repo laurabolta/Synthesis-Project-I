@@ -97,23 +97,38 @@ Synthesis-Project-I/
 
 - `Student_plots.ipynb` – Explores the dataset visually, analyzing feature importance, correlations, and distributions.
 
-- `Ensamble_trees_SUBJECTS.ipynb` – Serves as a baseline model using ensemble methods on individual subjects, used to compare against more general models.
+- `Ensamble_trees_SUBJECTS.ipynb` – Serves as a baseline model using ensemble methods on individual subjects, used to compare against more general models. However, it was not included in the final version of the project because it takes too much time and computer power to run for all subjects.
 
 - `main.py` – Entry point script that may serve for orchestration, integration, or running specific parts of the pipeline.
 
 
 **Important Folders:**
 
-- `Alert_Message` - Contains the implementation of both students and professors applications...
+* `Alert_Message` – Contains the Streamlit apps for professors (`app_profesors.py`) and students (`app_students.py`). These apps allow users to interact with the data, view predictions, and send alerts. They also generate personalized messages and attach exercises based on student risk levels. The apps use resources from the `files/` folder and are integrated with Google Sheets.
 
-- `Sensors` - Contains the creation of the dataset and implementation of CO2 message alert...
+* `Sensors` – Contains scripts for handling classroom environmental data (mainly CO₂). Includes `ClassDataset.py` to build structured datasets and `CO2.py` to generate alerts when air quality may impact learning. This information is used to enrich the prediction models with environmental context.
 
-PONER MAS EXPLICACIONES DE FILES/DOCUMENTOS, SOLO HE PUESTO EJEMPLOS, SI QUEREIS MEJORAR LA EXPLICACIÓN TAMBIEN
+* `Preparing_Data` – Contains data cleaning and preprocessing scripts. These scripts merge and prepare data from various sources (students, attendance, professors, sensors) and generate the final datasets used for machine learning model training. This step ensures data quality and consistency.
+
+* `files` – Provides essential resources for the apps to work:
+
+  * Exercises to be sent to students.
+  * Background images and interface assets.
+  * CSV files used for lookups or filtering.
+  * Configuration files and credentials for Google Sheets connection.
+
+* `Students/`, `Profesors/`, `Attendance/` – Contain the original and cleaned CSV datasets:
+
+  * `Students/`: Academic records, subject performance, dropout status.
+  * `Profesors/`: Courses taught, professor identifiers.
+  * `Attendance/`: Attendance records by subject and academic year.
+    These folders provide the raw inputs for both analysis and predictive modeling.
+
 
 ## Authors
 
-- Anna Blanco | NIU:
-- Laura Boltà | NIU:
-- Sonia Espinilla | NIU:
-- Agustina Lazzati | NIU:
+- Anna Blanco | NIU: 1709582
+- Laura Boltà | NIU: 1705130
+- Sonia Espinilla | NIU: 1708919
+- Agustina Lazzati | NIU: 1707964
 - Queralt Salvadó | NIU: 1706789
