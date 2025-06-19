@@ -1,4 +1,17 @@
 # Synthesis-Project-I: AI mentor program
+
+## Table of Contents
+
+- [Project Overview](#synthesis-project-i-ai-mentor-program)
+- [Key Features](#key-features)
+- [How to Set Up Environment and Dependencies](#how-to-set-up-environment-and-dependencies)
+  - [Using Conda Environment](#using-conda-environment)
+  - [Using pip Requirements](#using-pip-requirements)
+  - [Running the Alert Message Code](#running-the-alert-message-code)
+- [Folder Structure](#folder-structure)
+- [Authors](#authors)
+
+
 The goal of this project is to identify students who might be at risk of failing by using past academic data and machine learning. This helps schools to support students early, before problems happen. The project has two main parts: first, giving teachers useful information about their classes and students; second, sending alert messages to students at risk, with activities and exercises to help them succeed.
 
 ### Key Features
