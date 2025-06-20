@@ -69,8 +69,8 @@ Synthesis-Project-I/
 ├── Preparing_Data/                 # Data preprocessing scripts and resources
 ├── Profesors/                      # Professors datasets converted to CSV files
 ├── Sensors/                        # Files related to the CO2 alert message implementation
-│   ├── ClassDataset.py             # Sensor dataset handling code
-│   └── CO2.py                      # FALTA LA INFO
+│   ├── ClassDataset.py             # Code merging professors info and class schedule
+│   └── CO2.py                      # Sensor dataset handling code
 ├── Students/                       # Students datasets converted to CSV files
 ├── synthesis/                      # FALTA LA INFO
 ├── DATASET.py                      # Script to generate clean datasets for training dropout and final mark prediction models
