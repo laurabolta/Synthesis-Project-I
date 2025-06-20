@@ -78,7 +78,6 @@ Synthesis-Project-I/
 ├── DropOut_Conclusions.ipynb       # Analysis and conclusions on dropout prediction results
 ├── EarlyVsLate.ipynb               # Early vs Late fusion models for final mark prediction
 ├── Ensamble_trees_SUBJECTS.ipynb   # Ensemble trees model focused on a single subject 
-├── main.py                         # Use to load a pretrained ML model (ES NECESARIO TENER ESTE FICHERO?)
 ├── Models.ipynb                    # Regression models for predicting students' final marks
 ├── Student_plots.ipynb             # Data analysis: correlations and feature importance visualization
 ```
@@ -98,8 +97,6 @@ Synthesis-Project-I/
 - `Student_plots.ipynb` – Explores the dataset visually, analyzing feature importance, correlations, and distributions.
 
 - `Ensamble_trees_SUBJECTS.ipynb` – Serves as a baseline model using ensemble methods on individual subjects, used to compare against more general models. However, it was not included in the final version of the project because it takes too much time and computer power to run for all subjects.
-
-- `main.py` – Loads a pre-trained machine learning model (`ensemble_model.pkl`) using `joblib`. It checks if the model file exists and loads it into memory for use in predictions. If the file is not found, it raises an error.
 
 **Important Folders:**
 
