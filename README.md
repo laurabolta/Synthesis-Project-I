@@ -72,7 +72,7 @@ Synthesis-Project-I/
 │   ├── ClassDataset.py             # Code merging professors info and class schedule
 │   └── CO2.py                      # Sensor dataset handling code
 ├── Students/                       # Students datasets converted to CSV files
-├── synthesis/                      # FALTA LA INFO
+├── synthesis/                      
 ├── DATASET.py                      # Script to generate clean datasets for training dropout and final mark prediction models
 ├── DropOutModels.ipynb             # Dropout prediction models implementation
 ├── DropOut_Conclusions.ipynb       # Analysis and conclusions on dropout prediction results
