@@ -85,7 +85,7 @@ Synthesis-Project-I/
 
 **Important files:**
 
-- `DATASET.py` – Core script that generates a clean, unified dataset combining student, attendance, and sensor data. This dataset is used for both dropout and grade prediction models.
+- `DATASET.py` – Core script that generates a clean, unified dataset combining student and attendance. This dataset is used for both dropout and grade prediction models.
 
 - `DropOutModels.ipynb` – Contains machine learning models (classifiers) used to predict which students are likely to drop out.
 
