@@ -8,4 +8,4 @@ MODEL_PATH = 'ensemble_model.pkl'
 if os.path.exists(MODEL_PATH):
     ensemble_pipeline = joblib.load(MODEL_PATH)
 else:
-    raise FileNotFoundError(f"No se encontró el archivo del modelo en: {MODEL_PATH}")
+    raise FileNotFoundError(f"File not found in: {MODEL_PATH}")

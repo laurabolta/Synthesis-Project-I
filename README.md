@@ -62,23 +62,23 @@ Here we provide a partial view of the project structure, highlighting the most r
 ```bash
 Synthesis-Project-I/
 ├── Alert_Message/                  # Necessary files for alert message implementation
-│   ├── app_profesors.py
-│   └── app_students.py
+│   ├── app_profesors.py            # Code to implement professors web page
+│   └── app_students.py             # Code to implement students web page
 ├── Attendance/                     # Attendance datasets converted to CSV files
 ├── Images/                         # Images of the final web page  
 ├── Preparing_Data/                 # Data preprocessing scripts and resources
 ├── Profesors/                      # Professors datasets converted to CSV files
-├── Sensors/
+├── Sensors/                        # Files related to the CO2 alert message implementation
 │   ├── ClassDataset.py             # Sensor dataset handling code
-│   └── CO2.py                   
+│   └── CO2.py                      # FALTA LA INFO
 ├── Students/                       # Students datasets converted to CSV files
-├── synthesis/
+├── synthesis/                      # FALTA LA INFO
 ├── DATASET.py                      # Script to generate clean datasets for training dropout and final mark prediction models
 ├── DropOutModels.ipynb             # Dropout prediction models implementation
 ├── DropOut_Conclusions.ipynb       # Analysis and conclusions on dropout prediction results
 ├── EarlyVsLate.ipynb               # Early vs Late fusion models for final mark prediction
 ├── Ensamble_trees_SUBJECTS.ipynb   # Ensemble trees model focused on a single subject 
-├── main.py 
+├── main.py                         # Use to load a pretrained ML model (ES NECESARIO TENER ESTE FICHERO?)
 ├── Models.ipynb                    # Regression models for predicting students' final marks
 ├── Student_plots.ipynb             # Data analysis: correlations and feature importance visualization
 ```
@@ -99,8 +99,7 @@ Synthesis-Project-I/
 
 - `Ensamble_trees_SUBJECTS.ipynb` – Serves as a baseline model using ensemble methods on individual subjects, used to compare against more general models. However, it was not included in the final version of the project because it takes too much time and computer power to run for all subjects.
 
-- `main.py` – Entry point script that may serve for orchestration, integration, or running specific parts of the pipeline.
-
+- `main.py` – Loads a pre-trained machine learning model (`ensemble_model.pkl`) using `joblib`. It checks if the model file exists and loads it into memory for use in predictions. If the file is not found, it raises an error.
 
 **Important Folders:**
 
