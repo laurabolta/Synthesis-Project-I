@@ -123,8 +123,8 @@ Synthesis-Project-I/
 
 ## Authors
 
-- Anna Blanco | NIU: 1709582
-- Laura Boltà | NIU: 1705130
-- Sonia Espinilla | NIU: 1708919
-- Agustina Lazzati | NIU: 1707964
-- Queralt Salvadó | NIU: 1706789
+- Anna Blanco
+- Laura Boltà 
+- Sonia Espinilla
+- Agustina Lazzati 
+- Queralt Salvadó 
